@@ -1,0 +1,47 @@
+.mark-range {
+    @apply bg-custom-gray h-2 rounded-full pr-1;
+    appearance: none;
+    -webkit-appearance: none; /* Override default CSS styles */
+}
+
+/* Mouse-over effects
+.mark-range:hover {
+    opacity: 1; /* Fully shown on mouse-over */
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.mark-range::-webkit-slider-thumb {
+    @apply mb-8;
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    border-right: solid 10px transparent;
+    border-left: solid 10px transparent;
+    border-top: solid 10px white;
+    width: 10px; /* Set a specific slider handle width */
+    height: 0px; /* Slider handle height */
+    cursor: pointer; /* Cursor on hover */
+}
+.list {
+    @apply w-full;
+    display: flex;
+    justify-content: space-between;
+    height: auto;
+    overflow: hidden;
+}
+.opt {
+    @apply p-0 flex flex-col items-center;
+}
+.opt:first-child {
+    @apply items-center;
+}
+
+.opt:last-child {
+    @apply items-center;
+}
+.opt:before {
+    @apply bg-blue-200;
+    content: "";
+    display: block;
+    width: 2px;
+    height: 10px;
+    text-indent: 0;
+}

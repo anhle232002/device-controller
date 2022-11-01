@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#App {
+    @apply bg-custom-black;
+}
+
+.bg-tr-gradient {
+    @apply bg-gradient-to-tr from-custom-light-black to-custom-gray/80;
+}
