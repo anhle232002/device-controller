@@ -1,0 +1,1 @@
+pacmd list-sinks | grep '* index:' | xargs | cut -d ' ' -f 3

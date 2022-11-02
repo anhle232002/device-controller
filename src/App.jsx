@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/navBar/Navbar";
+import { useListener } from "./hooks/useListener";
 import AudioController from "./pages/AudioController";
 import BluetoothController from "./pages/BluetoothController";
 import WirelessController from "./pages/WirelessController";
@@ -9,42 +10,21 @@ import { useBluetoothStore } from "./store/bluetoothStore";
 
 function App() {
     const { updateData, isActive } = useBluetoothStore();
-    const { volume, updateVolume, balance } = useAudioStore();
-    const audioListener = useRef();
-    const audioTimer = useRef();
+    const { volume, updateVolume, balance, getAvailablePorts, getSinks } = useAudioStore();
 
     useEffect(() => {
-        let unwatch;
-        setTimeout(() => {
-            unwatch = window.bluetoothAPI.onUpdate((e, data) => {
-                updateData(data);
-            });
-        }, 1200);
+        getAvailablePorts();
+        getSinks();
+    }, []);
 
-        return () => {
-            if (unwatch) unwatch();
-        };
-    }, [isActive]);
+    useListener(() => window.bluetoothAPI.onUpdate((_, data) => updateData(data)), 1200, [
+        isActive,
+    ]);
 
-    useEffect(() => {
-        if (audioListener.current) {
-            console.log("stop watch");
-            audioListener.current();
-        }
-
-        clearTimeout(audioTimer.current);
-
-        audioTimer.current = setTimeout(() => {
-            audioListener.current = window.audioAPI.onUpdate((e, data) => {
-                updateVolume(data);
-            });
-        }, 1500);
-
-        return () => {
-            audioListener.current && audioListener.current();
-            clearTimeout(audioTimer.current);
-        };
-    }, [volume, balance]);
+    useListener(() => window.audioAPI.onUpdate((_, data) => updateVolume(data)), 1500, [
+        volume,
+        balance,
+    ]);
 
     return (
         <div id="App" className="min-h-screen">

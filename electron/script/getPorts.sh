@@ -1,18 +1,20 @@
 function read_ports
 {
-    counter=0
-    name="$(pacmd list-cards | grep "device.product.name" | cut -d '=' -f 2)"
+    output="$(pacmd list-cards)"
+    name="$( echo "$output" | grep "device.product.name" | cut -d '=' -f 2)"
     name=${name//\"/''}
-    ports="$(pacmd list-cards | grep "\[Out\]")"
+    ports_output="$(echo "$output" | grep -A 50 'ports:' | sed -E '/properties:|available: no|^[[:space:]]*$|ports|mic|Mic|MIC|microphone/d')"
+    ports=()
     while read line
     do
-        is_available=$(echo $line | cut -d ':' -f 3 | sed -e 's/)/''/g' | xargs )
-        # echo $is_available
-        ports[$counter]='"'$(echo $line | cut -d ':' -f 1 )'"'
-        ports[$counter]=${ports[$counter]//\[Out\]/}" /"$name" / ("$is_available")"
-        ports[$counter]='"'${ports[$counter]//\"/''}'"',
-        let "counter+=1"
-    done <<< $ports
+        port="{"
+        port_name="$(echo "$line" | cut -d ':' -f 1 )"
+        port+="\"name\"":\"$port_name\",
+        port_name2="$(echo "$port_name" | cut -d ' ' -f 2 )"
+        port+="\"fullName\"":\"$port_name2" -"$name\""}",
+        ports+=$port
+     
+    done <<< $ports_output
     echo {'"ports"':[
     for value in "${ports[@]}"
         do

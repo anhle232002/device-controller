@@ -1,6 +1,7 @@
 devices_output="$(bluetoothctl devices | sed '/CHG/d' )"
 # echo "$devices_output"
 
+#sed '/CHG/d' remove line with pattern
 devices=()
 
 while read line
