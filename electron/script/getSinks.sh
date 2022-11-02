@@ -71,7 +71,7 @@ function read_volume
     done <<< "$volumes"
 }
 
-function read_active_port
+function read_ports
 {
     counter=0
     active_ports="$(echo "$sinks"| grep "Active Port")"
@@ -84,11 +84,20 @@ function read_active_port
         fi
     done <<< "$active_ports"
 }
-# function read_current_sink
-# {
-#     current_sink="$(pacmd list-sinks| grep "* index:" | cut -d ':' -f 2 | xargs)"
-#     echo "$current_sink"
-# }
+
+function read_active_port
+{
+    counter=0
+    active_ports="$(echo "$sinks"| grep "Active Port")"
+    while read line
+    do
+        sink_arr[$counter]+='"activePort"':'"'$(echo $line | cut -d ':' -f 2 | xargs)'"'},
+        let "counter+=1"
+        if [ $counter -gt $number_of_sink ]; then
+            break
+        fi
+    done <<< "$active_ports"
+}
 
 
 read_states

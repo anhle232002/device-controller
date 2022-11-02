@@ -33,6 +33,13 @@ contextBridge.exposeInMainWorld("audioAPI", {
         ipcRenderer.invoke("change-balance", value);
     },
 
+    changeSinkPort: (index: number, portName: string) =>
+        ipcRenderer.invoke("change-sink-port", index, portName),
+
+    getAvailablePorts: () => ipcRenderer.invoke("get-available-port"),
+
+    getSinks: () => ipcRenderer.invoke("get-sinks"),
+
     onUpdate: (callback: (event: any, value: any) => void) => {
         ipcRenderer.on("on-update-volume", callback);
         return () => ipcRenderer.removeListener("on-update-volume", callback);
