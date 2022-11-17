@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import { exec, execSync } from "child_process";
+import { exec } from "child_process";
 import { promisify } from "util";
 import { Worker } from "worker_threads";
 const execAsync = promisify(exec);

@@ -45,3 +45,9 @@ contextBridge.exposeInMainWorld("audioAPI", {
         return () => ipcRenderer.removeListener("on-update-volume", callback);
     },
 });
+
+contextBridge.exposeInMainWorld("wifiAPI", {
+    toggle: () => {
+        ipcRenderer.invoke("toggle-wifi");
+    },
+});
