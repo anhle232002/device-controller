@@ -15,7 +15,7 @@ export const RangeSlider = ({ initVal, min, max, onChange }) => {
     const containerRef = useRef(null);
     const truckRef = useRef(null);
     const x = useMotionValue(0);
-    const [value, setVatue] = useState();
+    const [value, setValue] = useState();
     const widthX = useTransform(x, (value) => {
         return value + 16;
     });
@@ -23,14 +23,19 @@ export const RangeSlider = ({ initVal, min, max, onChange }) => {
     const handleDrag = () => {
         const val = calculateValueFromWidth(x.get(), min, max, truckRef.current.clientWidth);
 
-        setVatue(val);
+        if (val === value) return;
+
+        console.log(val, value);
+
+        setValue(val);
+
         onChange && onChange(val);
     };
 
     const handleClick = () => {};
 
     useEffect(() => {
-        setVatue(initVal);
+        setValue(initVal);
         const width = calculateWidthFromValue(value, min, max, truckRef.current.clientWidth);
         x.set(width);
     }, [value, initVal]);

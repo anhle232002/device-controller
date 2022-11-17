@@ -10,7 +10,8 @@ import { useBluetoothStore } from "./store/bluetoothStore";
 
 function App() {
     const { updateData, isActive } = useBluetoothStore();
-    const { volume, updateVolume, balance, getAvailablePorts, getSinks } = useAudioStore();
+    const { volume, updateVolume, balance, getAvailablePorts, getSinks, sinkInputs } =
+        useAudioStore();
 
     useEffect(() => {
         getAvailablePorts();
@@ -21,20 +22,24 @@ function App() {
         isActive,
     ]);
 
-    useListener(() => window.audioAPI.onUpdate((_, data) => updateVolume(data)), 1500, [
+    useListener(() => window.audioAPI.onUpdate((_, data) => updateVolume(data)), 1000, [
         volume,
         balance,
+        sinkInputs,
     ]);
 
     return (
-        <div id="App" className="min-h-screen">
+        <div id="App" className="min-h-screen ">
             <Navbar />
-            <Routes>
-                <Route index path="/bluetooth" element={<BluetoothController />}></Route>
-                <Route path="/audio" element={<AudioController />}></Route>
-                <Route path="/wireless" element={<WirelessController />}></Route>
-                <Route path="/screen" element={<WirelessController />}></Route>
-            </Routes>
+
+            <div className="">
+                <Routes>
+                    <Route index path="/bluetooth" element={<BluetoothController />}></Route>
+                    <Route path="/audio" element={<AudioController />}></Route>
+                    <Route path="/wireless" element={<WirelessController />}></Route>
+                    <Route path="/screen" element={<WirelessController />}></Route>
+                </Routes>
+            </div>
         </div>
     );
 }

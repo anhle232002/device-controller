@@ -1,12 +1,8 @@
 import { ipcRenderer, contextBridge } from "electron";
 
 const api = {
-    sendMessage: (message: string) => {
-        ipcRenderer.send("message", message);
-    },
-
-    on: (channel: string, callback: (data: any) => void) => {
-        ipcRenderer.on(channel, (_, data) => callback(data));
+    loadImage(filePath: string) {
+        return ipcRenderer.invoke("load-image", filePath);
     },
 };
 contextBridge.exposeInMainWorld("Main", api);
@@ -27,6 +23,10 @@ contextBridge.exposeInMainWorld("bluetoothAPI", {
 contextBridge.exposeInMainWorld("audioAPI", {
     changeVolume: (value: number) => {
         ipcRenderer.invoke("change-volume", value);
+    },
+
+    changeAppVolume: (value: number, index: number) => {
+        ipcRenderer.invoke("change-application-volume", value, index);
     },
 
     changeBalance: (value: number) => {

@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import { exec } from "child_process";
+import { exec, execSync } from "child_process";
 import { promisify } from "util";
 import { Worker } from "worker_threads";
 const execAsync = promisify(exec);
@@ -8,6 +8,15 @@ export const handleAudioAPI = (webContent: Electron.WebContents) => {
         try {
             console.log(`SET VOLUME ${sink} : ${value}%`);
             await execAsync(`pactl set-sink-volume ${sink} ${value}%`);
+        } catch (error) {
+            console.log(error);
+        }
+    });
+
+    ipcMain.handle("change-application-volume", async (e, value, index) => {
+        try {
+            console.log(`SET VOLUME ${index} : ${value}%`);
+            await execAsync(`pactl set-sink-input-volume ${index} ${value}%`);
         } catch (error) {
             console.log(error);
         }
@@ -109,6 +118,32 @@ export const getCurrentSinkIndex = async () => {
 export const changeSinkPort = async (event: any, index: number, portName: string) => {
     try {
         await execAsync(`pactl set-sink-port ${index} "${portName}"`);
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const getSinkInputs = async () => {
+    try {
+        await execAsync("chmod +x electron/script/getSinksInputs.sh");
+
+        const { stdout } = await execAsync("bash electron/script/getSinksInputs.sh");
+
+        if (stdout === "") return null;
+
+        let { results: sinkInputs } = JSON.parse(stdout);
+
+        sinkInputs.pop();
+
+        sinkInputs = await Promise.all(
+            sinkInputs.map(async (i: any) => {
+                const { stdout } = await execAsync(
+                    `python3 electron/script/getIcon.py ${i.icon_name}`
+                );
+                return { ...i, icon: stdout };
+            })
+        );
+
+        return sinkInputs;
     } catch (error) {
         console.log(error);
     }
