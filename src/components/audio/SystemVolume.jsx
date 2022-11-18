@@ -1,8 +1,12 @@
+import { useMemo } from "react";
 import { useAudioStore } from "../../store/audioStore";
 import { RangeSlider } from "../common/RangeSlider";
 
 function SystemVolume() {
-    const { changeVolume, volume } = useAudioStore();
+    const { changeVolume, volume: systemVolume } = useAudioStore();
+    const volume = useMemo(() => {
+        return systemVolume;
+    });
     return (
         <>
             <h3>System Volume</h3>

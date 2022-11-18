@@ -11,7 +11,7 @@ function OutputDevices() {
 
         return availablePorts.find((port) => port.name === currentSink.activePort);
     }, [currentSinkIndex]);
-    console.log(currentPort);
+
     return (
         <>
             <h3 className="">Output</h3>

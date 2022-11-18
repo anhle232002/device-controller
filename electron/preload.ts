@@ -1,12 +1,8 @@
 import { ipcRenderer, contextBridge } from "electron";
 
 const api = {
-    sendMessage: (message: string) => {
-        ipcRenderer.send("message", message);
-    },
-
-    on: (channel: string, callback: (data: any) => void) => {
-        ipcRenderer.on(channel, (_, data) => callback(data));
+    loadImage(filePath: string) {
+        return ipcRenderer.invoke("load-image", filePath);
     },
 };
 contextBridge.exposeInMainWorld("Main", api);
@@ -29,6 +25,10 @@ contextBridge.exposeInMainWorld("audioAPI", {
         ipcRenderer.invoke("change-volume", value);
     },
 
+    changeAppVolume: (value: number, index: number) => {
+        ipcRenderer.invoke("change-application-volume", value, index);
+    },
+
     changeBalance: (value: number) => {
         ipcRenderer.invoke("change-balance", value);
     },
@@ -43,5 +43,11 @@ contextBridge.exposeInMainWorld("audioAPI", {
     onUpdate: (callback: (event: any, value: any) => void) => {
         ipcRenderer.on("on-update-volume", callback);
         return () => ipcRenderer.removeListener("on-update-volume", callback);
+    },
+});
+
+contextBridge.exposeInMainWorld("wifiAPI", {
+    toggle: () => {
+        ipcRenderer.invoke("toggle-wifi");
     },
 });

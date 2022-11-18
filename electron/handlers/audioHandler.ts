@@ -13,6 +13,15 @@ export const handleAudioAPI = (webContent: Electron.WebContents) => {
         }
     });
 
+    ipcMain.handle("change-application-volume", async (e, value, index) => {
+        try {
+            console.log(`SET VOLUME ${index} : ${value}%`);
+            await execAsync(`pactl set-sink-input-volume ${index} ${value}%`);
+        } catch (error) {
+            console.log(error);
+        }
+    });
+
     ipcMain.handle("change-balance", async (e, value) => {
         try {
             const { left, right } = await getAudioVolume();
@@ -109,6 +118,32 @@ export const getCurrentSinkIndex = async () => {
 export const changeSinkPort = async (event: any, index: number, portName: string) => {
     try {
         await execAsync(`pactl set-sink-port ${index} "${portName}"`);
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const getSinkInputs = async () => {
+    try {
+        await execAsync("chmod +x electron/script/getSinksInputs.sh");
+
+        const { stdout } = await execAsync("bash electron/script/getSinksInputs.sh");
+
+        if (stdout === "") return null;
+
+        let { results: sinkInputs } = JSON.parse(stdout);
+
+        sinkInputs.pop();
+
+        sinkInputs = await Promise.all(
+            sinkInputs.map(async (i: any) => {
+                const { stdout } = await execAsync(
+                    `python3 electron/script/getIcon.py ${i.icon_name}`
+                );
+                return { ...i, icon: stdout };
+            })
+        );
+
+        return sinkInputs;
     } catch (error) {
         console.log(error);
     }
