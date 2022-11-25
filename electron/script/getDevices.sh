@@ -11,7 +11,7 @@ do
     information="$(bluetoothctl info $address | sed '/CHG/d')"
 
     if grep -q "public" <<< "$information"; then
-        address="$(echo "$information" | grep "Device")"
+        address="$(echo "$information"fbd | grep "Device")"
         data+='"address"':'"'$(echo $address | cut -d ' ' -f 2 | xargs)'"',
         name="$(echo "$information" | grep "Name")"
         data+='"name"':'"'$(echo $name | cut -d ':' -f 2 | xargs)'"',

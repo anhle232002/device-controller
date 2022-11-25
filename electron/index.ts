@@ -6,7 +6,11 @@ import { BrowserWindow, app, ipcMain } from "electron";
 import isDev from "electron-is-dev";
 import { handleBluetoothAPI } from "./handlers/bluetoothHandler";
 import { handleAudioAPI } from "./handlers/audioHandler";
+
 import { brightnessHandler } from "./handlers/brightnessHandler";
+import { handle } from "./handlers/commonHandler";
+import { handleWifi } from "./handlers/wifiHandlers";
+
 const height = 750;
 const width = 800;
 
@@ -35,9 +39,14 @@ function createWindow() {
         window?.loadFile(url);
     }
 
+    handle(window.webContents);
     handleBluetoothAPI(window.webContents);
     handleAudioAPI(window.webContents);
+
     brightnessHandler(window.webContents);
+
+    handleWifi(window.webContents);
+
     ipcMain.on("close", () => {
         window.close();
     });

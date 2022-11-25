@@ -9,3 +9,28 @@
 .bg-tr-gradient {
     @apply bg-gradient-to-tr from-custom-light-black to-custom-gray/80;
 }
+.center {
+    @apply flex items-center justify-center;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 3px;
+    @apply -z-10;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    @apply bg-custom-gray;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    @apply rounded-full;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

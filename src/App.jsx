@@ -9,10 +9,13 @@ import BrightnessController from "./pages/BrightnessController"
 import { useAudioStore } from "./store/audioStore";
 import { useBluetoothStore } from "./store/bluetoothStore";
 import { useBrightnessStore } from "./store/brightnessStore";
+import { useWifiStore } from "./store/wifiStore";
 
 function App() {
     const { updateData, isActive } = useBluetoothStore();
-    const { volume, updateVolume, balance, getAvailablePorts, getSinks } = useAudioStore();
+    const { onUpdateWifi, networks } = useWifiStore();
+    const { volume, updateVolume, balance, getAvailablePorts, getSinks, sinkInputs } =
+        useAudioStore();
     const { volume: brnVolume,
             updateVolume: updateBrnVolume,
             check,
@@ -36,9 +39,14 @@ function App() {
         isActive,
     ]);
 
-    useListener(() => window.audioAPI.onUpdate((_, data) => updateVolume(data)), 1500, [
+    useListener(() => window.audioAPI.onUpdate((_, data) => updateVolume(data)), 1000, [
         volume,
         balance,
+        sinkInputs,
+    ]);
+
+    useListener(() => window.wifiAPI.onUpdateNetworks((_, data) => onUpdateWifi(data)), 1000, [
+        networks,
     ]);
     useListener(() => window.brightnessAPI.updateVolume((_,data)=>updateBrnVolume(data)),1000,[
         brnVolume
@@ -57,14 +65,19 @@ function App() {
     }),1000,[timeFrom,timeTo])
     // console.log(window.brightnessAPI);
     return (
-        <div id="App" className="min-h-screen">
+        <div id="App" className="min-h-screen ">
             <Navbar />
-            <Routes>
-                <Route index path="/bluetooth" element={<BluetoothController />}></Route>
-                <Route path="/audio" element={<AudioController />}></Route>
-                <Route path="/wireless" element={<WirelessController />}></Route>
-                <Route path="/screen" element={<BrightnessController />}></Route>
-            </Routes>
+
+            <div className="">
+                <Routes>
+                    <Route path="/" element={<BluetoothController />}></Route>
+                    <Route path="/bluetooth" element={<BluetoothController />}></Route>
+                    <Route path="/audio" element={<AudioController />}></Route>
+                    <Route path="/wifi" element={<WifiController />}></Route>
+                    <Route path="/screen" element={<BrightnessController />}></Route>
+                </Routes>
+            </div>
+
         </div>
     );
 }
