@@ -11,7 +11,7 @@ import { useWifiStore } from "./store/wifiStore";
 
 function App() {
     const { updateData, isActive } = useBluetoothStore();
-    const { onUpdateWifi, networks } = useWifiStore();
+    const { onUpdateWifi, networks, isActive: isWifiActive } = useWifiStore();
     const { volume, updateVolume, balance, getAvailablePorts, getSinks, sinkInputs } =
         useAudioStore();
 
@@ -32,6 +32,7 @@ function App() {
 
     useListener(() => window.wifiAPI.onUpdateNetworks((_, data) => onUpdateWifi(data)), 1000, [
         networks,
+        isWifiActive,
     ]);
 
     return (

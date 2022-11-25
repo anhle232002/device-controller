@@ -17,8 +17,9 @@ export const useWifiStore = create((set, get) => ({
             set(() => ({ networks: data.networks }));
         }
 
-        if (data.status) {
+        if (typeof data.status !== "undefined") {
             if (get().isActive === data.status) return;
+            console.log("status", data.status);
 
             set(() => ({ isActive: data.status }));
         }

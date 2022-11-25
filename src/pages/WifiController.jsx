@@ -5,7 +5,7 @@ import { useWifiStore } from "../store/wifiStore";
 function WifiController() {
     const { isActive, toggle, networks } = useWifiStore();
 
-    console.log(networks);
+    console.log(isActive);
     return (
         <div className="py-4 px-10 text-custom-white">
             <div className="flex items-center justify-between">
