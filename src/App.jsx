@@ -4,9 +4,11 @@ import Navbar from "./components/navBar/Navbar";
 import { useListener } from "./hooks/useListener";
 import AudioController from "./pages/AudioController";
 import BluetoothController from "./pages/BluetoothController";
-import WifiController from "./pages/WifiController";
+import WirelessController from "./pages/WirelessController";
+import BrightnessController from "./pages/BrightnessController"
 import { useAudioStore } from "./store/audioStore";
 import { useBluetoothStore } from "./store/bluetoothStore";
+import { useBrightnessStore } from "./store/brightnessStore";
 import { useWifiStore } from "./store/wifiStore";
 
 function App() {
@@ -14,9 +16,22 @@ function App() {
     const { onUpdateWifi, networks } = useWifiStore();
     const { volume, updateVolume, balance, getAvailablePorts, getSinks, sinkInputs } =
         useAudioStore();
+    const { volume: brnVolume,
+            updateVolume: updateBrnVolume,
+            check,
+            updateNightLight,
+            temperature,
+            updateTemperature,
+            schedule,
+            updateSchedule,
+            timeFrom,
+            timeTo,
+            updateTimeFrom,
+            updateTimeTo,
+        } = useBrightnessStore();
 
     useEffect(() => {
-        getAvailablePorts();
+        // getAvailablePorts();
         getSinks();
     }, []);
 
@@ -33,7 +48,22 @@ function App() {
     useListener(() => window.wifiAPI.onUpdateNetworks((_, data) => onUpdateWifi(data)), 1000, [
         networks,
     ]);
-
+    useListener(() => window.brightnessAPI.updateVolume((_,data)=>updateBrnVolume(data)),1000,[
+        brnVolume
+    ])
+    useListener(() => window.brightnessAPI.updateCheckNightLight((_,data)=>{updateNightLight(data)
+    // console.log(data);
+    }),1000,[check]);
+    useListener(()=> window.brightnessAPI.updateTemperature((_,data)=>{
+        updateTemperature(data);
+    }),1000,[temperature]);
+    useListener(() => window.brightnessAPI.updateSchedule((_,data) => updateSchedule(data)),1000,[schedule]);
+    
+    useListener(() => window.brightnessAPI.updateTime((_,data) =>{
+        updateTimeFrom(data.timeFrom);
+        updateTimeTo(data.timeTo);
+    }),1000,[timeFrom,timeTo])
+    // console.log(window.brightnessAPI);
     return (
         <div id="App" className="min-h-screen ">
             <Navbar />
@@ -44,9 +74,10 @@ function App() {
                     <Route path="/bluetooth" element={<BluetoothController />}></Route>
                     <Route path="/audio" element={<AudioController />}></Route>
                     <Route path="/wifi" element={<WifiController />}></Route>
-                    <Route path="/screen" element={<WifiController />}></Route>
+                    <Route path="/screen" element={<BrightnessController />}></Route>
                 </Routes>
             </div>
+
         </div>
     );
 }
