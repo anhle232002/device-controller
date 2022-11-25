@@ -19,12 +19,10 @@ export const handleBluetoothAPI = (webContent: Electron.WebContents) => {
         } else await execAsync("rfkill block bluetooth");
     });
 
-//     const bluetoothWorker = new Worker("./main/threads/bluetooth.js");
-//     bluetoothWorker.on("message", (data) => {
-//         console.log("send");
-
-//         webContent.send("on-update-bluetooth", data);
-//     });
+    const bluetoothWorker = new Worker("./main/threads/bluetooth.js");
+    bluetoothWorker.on("message", (data) => {
+        webContent.send("on-update-bluetooth", data);
+    });
 };
 
 export const getBluetoothStatus = async () => {
