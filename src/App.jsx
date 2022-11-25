@@ -34,9 +34,10 @@ function App() {
 
             <div className="">
                 <Routes>
-                    <Route index path="/bluetooth" element={<BluetoothController />}></Route>
+                    <Route path="/" element={<BluetoothController />}></Route>
+                    <Route path="/bluetooth" element={<BluetoothController />}></Route>
                     <Route path="/audio" element={<AudioController />}></Route>
-                    <Route path="/wireless" element={<WirelessController />}></Route>
+                    <Route path="/wifi" element={<WirelessController />}></Route>
                     <Route path="/screen" element={<WirelessController />}></Route>
                 </Routes>
             </div>

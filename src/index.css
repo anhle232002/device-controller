@@ -9,6 +9,9 @@
 .bg-tr-gradient {
     @apply bg-gradient-to-tr from-custom-light-black to-custom-gray/80;
 }
+.center {
+    @apply flex items-center justify-center;
+}
 
 /* width */
 ::-webkit-scrollbar {

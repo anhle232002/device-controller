@@ -183,4 +183,3 @@ export const testMicrophone = () => {
         console.log(error);
     }
 };
-// run();
