@@ -44,10 +44,28 @@ contextBridge.exposeInMainWorld("audioAPI", {
         ipcRenderer.on("on-update-volume", callback);
         return () => ipcRenderer.removeListener("on-update-volume", callback);
     },
+
+    startTestingMicroPhone: () => {
+        return ipcRenderer.invoke("start-testing-microphone");
+    },
+
+    testMicrophone: (callback: (event: any, value: any) => void) => {
+        ipcRenderer.on("on-update-microphone-volume", callback);
+        return () => ipcRenderer.removeListener("on-update-microphone-volume", callback);
+    },
+
+    stopTestingMicrophone: () => {
+        return ipcRenderer.invoke("stop-testing-microphone");
+    },
 });
 
 contextBridge.exposeInMainWorld("wifiAPI", {
     toggle: () => {
         ipcRenderer.invoke("toggle-wifi");
+    },
+
+    onUpdateNetworks(callback: (event: any, value: any) => void) {
+        ipcRenderer.on("on-update-networks", callback);
+        return () => ipcRenderer.removeListener("on-update-networks", callback);
     },
 });

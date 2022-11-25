@@ -4,12 +4,14 @@ import Navbar from "./components/navBar/Navbar";
 import { useListener } from "./hooks/useListener";
 import AudioController from "./pages/AudioController";
 import BluetoothController from "./pages/BluetoothController";
-import WirelessController from "./pages/WirelessController";
+import WifiController from "./pages/WifiController";
 import { useAudioStore } from "./store/audioStore";
 import { useBluetoothStore } from "./store/bluetoothStore";
+import { useWifiStore } from "./store/wifiStore";
 
 function App() {
     const { updateData, isActive } = useBluetoothStore();
+    const { onUpdateWifi, networks } = useWifiStore();
     const { volume, updateVolume, balance, getAvailablePorts, getSinks, sinkInputs } =
         useAudioStore();
 
@@ -28,16 +30,21 @@ function App() {
         sinkInputs,
     ]);
 
+    useListener(() => window.wifiAPI.onUpdateNetworks((_, data) => onUpdateWifi(data)), 1000, [
+        networks,
+    ]);
+
     return (
         <div id="App" className="min-h-screen ">
             <Navbar />
 
             <div className="">
                 <Routes>
-                    <Route index path="/bluetooth" element={<BluetoothController />}></Route>
+                    <Route path="/" element={<BluetoothController />}></Route>
+                    <Route path="/bluetooth" element={<BluetoothController />}></Route>
                     <Route path="/audio" element={<AudioController />}></Route>
-                    <Route path="/wireless" element={<WirelessController />}></Route>
-                    <Route path="/screen" element={<WirelessController />}></Route>
+                    <Route path="/wifi" element={<WifiController />}></Route>
+                    <Route path="/screen" element={<WifiController />}></Route>
                 </Routes>
             </div>
         </div>

@@ -39,7 +39,7 @@ function createWindow() {
     handle(window.webContents);
     handleBluetoothAPI(window.webContents);
     handleAudioAPI(window.webContents);
-    handleWifi();
+    handleWifi(window.webContents);
 
     ipcMain.on("close", () => {
         window.close();

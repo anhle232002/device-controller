@@ -22,7 +22,6 @@ function getNetworks
 
 getNetworks
 
-
 echo {'"networks"':[
 for value in "${availableNetWorks[@]}"
 do

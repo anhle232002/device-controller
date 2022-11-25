@@ -40,7 +40,7 @@ const SinkInput = ({ icon_name, icon, applicationName, left, right, index }) => 
     }, [icon]);
     return (
         <li className="grid grid-cols-12 items-center gap-4">
-            <div className="col-span-4 flex gap-2 items-center">
+            <div className={`col-span-4 flex gap-2 items-center `}>
                 <img className="w-6 h-6" src={image} alt="" />
                 <span className="text-sm">{applicationName}</span>
             </div>

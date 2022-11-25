@@ -1,9 +1,12 @@
 import { ipcMain } from "electron";
-import { exec } from "child_process";
+import { exec, spawn } from "child_process";
 import { promisify } from "util";
 import { Worker } from "worker_threads";
+import { stdout } from "process";
 const execAsync = promisify(exec);
 export const handleAudioAPI = (webContent: Electron.WebContents) => {
+    let testingMicrophoneWorker: Worker | null = null;
+
     ipcMain.handle("change-volume", async (e, value, sink = '"@DEFAULT_SINK@"') => {
         try {
             console.log(`SET VOLUME ${sink} : ${value}%`);
@@ -48,6 +51,14 @@ export const handleAudioAPI = (webContent: Electron.WebContents) => {
         }
     });
 
+    ipcMain.handle("start-testing-microphone", () => {
+        console.log("start testing microphone");
+        testingMicrophoneWorker = new Worker("./main/threads/microphone.js");
+        testingMicrophoneWorker.on("message", (data) => {
+            webContent.send("on-update-microphone-volume", data);
+        });
+    });
+
     ipcMain.handle("get-available-port", getAvailablePort);
     ipcMain.handle("get-sinks", getSinks);
     ipcMain.handle("change-sink-port", changeSinkPort);
@@ -55,6 +66,9 @@ export const handleAudioAPI = (webContent: Electron.WebContents) => {
     const audioWorker = new Worker("./main/threads/audio.js");
     audioWorker.on("message", (data) => {
         webContent.send("on-update-volume", data);
+    });
+    ipcMain.handle("stop-testing-microphone", () => {
+        if (testingMicrophoneWorker) testingMicrophoneWorker.terminate();
     });
 };
 
@@ -134,6 +148,8 @@ export const getSinkInputs = async () => {
 
         sinkInputs.pop();
 
+        sinkInputs = sinkInputs.filter((s: any) => s.applicationName !== "Chromium");
+
         sinkInputs = await Promise.all(
             sinkInputs.map(async (i: any) => {
                 const { stdout } = await execAsync(
@@ -144,6 +160,25 @@ export const getSinkInputs = async () => {
         );
 
         return sinkInputs;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const testMicrophone = () => {
+    try {
+        const ls = spawn("bash", ["electron/script/test.sh"]);
+
+        ls.stdout.on("data", (data) => {
+            console.log(data);
+        });
+
+        ls.stderr.on("data", (data) => {
+            console.error(`${data}`);
+        });
+        ls.on("close", (code) => {
+            console.log(`child process exited with code ${code}`);
+        });
     } catch (error) {
         console.log(error);
     }
