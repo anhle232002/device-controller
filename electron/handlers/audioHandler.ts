@@ -43,10 +43,10 @@ export const handleAudioAPI = (webContent: Electron.WebContents) => {
     ipcMain.handle("get-sinks", getSinks);
     ipcMain.handle("change-sink-port", changeSinkPort);
 
-    const audioWorker = new Worker("./main/threads/audio.js");
-    audioWorker.on("message", (data) => {
-        webContent.send("on-update-volume", data);
-    });
+    // const audioWorker = new Worker("./main/threads/audio.js");
+    // audioWorker.on("message", (data) => {
+    //     webContent.send("on-update-volume", data);
+    // });
 };
 
 export const getAudioVolume = async () => {
