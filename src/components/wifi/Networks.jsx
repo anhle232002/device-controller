@@ -1,20 +1,17 @@
 import { useState } from "react";
+import { useWifiStore } from "../../store/wifiStore";
 import WifiIcon from "../common/WifiIcon";
 import NetworkDetailModal from "./NetworkDetailModal";
 
 function Networks() {
-    const networks = [
-        { name: "wifi cua anh", signal: "level-1" },
-        { name: "wifi cua anh", signal: "level-1" },
-        { name: "wifi cua anh", signal: "level-4" },
-        { name: "wifi cua anh", signal: "level-4" },
-        { name: "wifi cua anh", signal: "level-4" },
-        { name: "wifi cua anh", signal: "level-4" },
-    ];
+    const { networks } = useWifiStore();
+
+    if (networks.length === 0) return <div>Loading...</div>;
 
     return (
         <ul className="bg-custom-light-black shadow-md rounded-md border-[2px] border-custom-gray">
-            {networks.length !== 0 && networks.map((network) => <WifiNetwork {...network} />)}
+            {networks.length !== 0 &&
+                networks.map((network) => <WifiNetwork key={network.name} {...network} />)}
         </ul>
     );
 }
@@ -26,7 +23,7 @@ const WifiNetwork = ({ signal, name }) => {
         <>
             <div className="flex gap-4 items-center px-6 py-3 border-b-[2px] border-custom-gray last:border-none">
                 <span>
-                    <WifiIcon className="text-xl" level={signal} />
+                    <WifiIcon className="text-xl" level={Math.round(signal / 25)} />
                 </span>
 
                 <h3 className="flex-1">{name}</h3>

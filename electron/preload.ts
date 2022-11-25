@@ -63,4 +63,9 @@ contextBridge.exposeInMainWorld("wifiAPI", {
     toggle: () => {
         ipcRenderer.invoke("toggle-wifi");
     },
+
+    onUpdateNetworks(callback: (event: any, value: any) => void) {
+        ipcRenderer.on("on-update-networks", callback);
+        return () => ipcRenderer.removeListener("on-update-networks", callback);
+    },
 });
