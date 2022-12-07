@@ -1,16 +1,13 @@
 import Volume from "../components/brightness/Volume";
 import Nightlight from "../components/brightness/Nightlight";
 
-
-function BrightnessController(){
-    
+function BrightnessController() {
     return (
         <div>
-            <Volume/>
-            <Nightlight/>
+            <Volume />
+            <Nightlight />
         </div>
     );
 }
 
-
-export default BrightnessController
+export default BrightnessController;

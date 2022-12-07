@@ -3,7 +3,6 @@ import { exec } from "child_process";
 import fs from "fs";
 import { promisify } from "util";
 import { Worker } from "worker_threads";
-
 const execAsync = promisify(exec);
 
 export const handle = (webContent: Electron.WebContents) => {

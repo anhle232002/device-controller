@@ -4,10 +4,7 @@ import { promisify } from "util";
 
 const execAsync = promisify(exec);
 
-import {
-    getBluetoothDevices,
-    getBluetoothStatus,
-} from "../handlers/bluetoothHandler";
+import { getBluetoothDevices, getBluetoothStatus } from "../handlers/bluetoothHandler";
 
 interface BluetoothData {
     isActive?: boolean;
@@ -39,8 +36,5 @@ setInterval(getBluetoothData, 1000);
 setInterval(async () => {
     const isActive = await getBluetoothStatus();
 
-    if (isActive) {
-        exec("timeout 10 bluetoothctl scan on");
-    }
-    console.log(isActive);
+    if (isActive) exec("timeout 10 bluetoothctl scan on");
 }, 10000);

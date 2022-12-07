@@ -70,7 +70,6 @@ export const handleAudioAPI = (webContent: Electron.WebContents) => {
     ipcMain.handle("stop-testing-microphone", () => {
         if (testingMicrophoneWorker) testingMicrophoneWorker.terminate();
     });
-
 };
 
 export const getAudioVolume = async () => {
@@ -94,7 +93,7 @@ export const getSinks = async () => {
 
         const { sinks } = JSON.parse(stdout);
         sinks.pop();
-        console.log(sinks);
+        // console.log(sinks);
 
         return { sinks, currentSinkIndex };
     } catch (error) {

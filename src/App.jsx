@@ -13,7 +13,7 @@ import { useWifiStore } from "./store/wifiStore";
 
 function App() {
     const { updateData, isActive } = useBluetoothStore();
-    const { onUpdateWifi, networks } = useWifiStore();
+    const { onUpdateWifi, networks, isActive: wifiStatus, connectedWifi } = useWifiStore();
     const { volume, updateVolume, balance, getAvailablePorts, getSinks, sinkInputs } =
         useAudioStore();
     const {
@@ -48,6 +48,8 @@ function App() {
 
     useListener(() => window.wifiAPI.onUpdateNetworks((_, data) => onUpdateWifi(data)), 1000, [
         networks,
+        wifiStatus,
+        connectedWifi,
     ]);
     useListener(() => window.brightnessAPI.updateVolume((_, data) => updateBrnVolume(data)), 1000, [
         brnVolume,
@@ -85,6 +87,7 @@ function App() {
         [timeFrom, timeTo]
     );
     // console.log(window.brightnessAPI);
+
     return (
         <div id="App" className="min-h-screen ">
             <Navbar />

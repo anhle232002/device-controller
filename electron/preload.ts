@@ -68,57 +68,81 @@ contextBridge.exposeInMainWorld("wifiAPI", {
         ipcRenderer.on("on-update-networks", callback);
         return () => ipcRenderer.removeListener("on-update-networks", callback);
     },
-});
-contextBridge.exposeInMainWorld("brightnessAPI",{
-    changeVolume: (value: number)=>{
-        console.log(value);
-        return ipcRenderer.invoke("change-volume-brn",value);
+
+    getConnections() {
+        return ipcRenderer.invoke("get-connection");
     },
-    updateVolume: (callback: (event: any, value: any)=> void)=>{
-        ipcRenderer.on("onUpdateBrightness",callback);
+
+    displayConnectionSettings(UUID: string) {
+        return ipcRenderer.invoke("display-connection-settings", UUID);
+    },
+
+    turnOnConnection(UUID: String) {
+        return ipcRenderer.invoke("turn-on-connection", UUID);
+    },
+
+    //mcli -s -g 802-11-wireless-security.psk connection show "TTHocLieu t1"
+    getWifiPassword(name: string) {
+        return ipcRenderer.invoke("get-wifi-password", name);
+    },
+
+    connectToWifi(SSID: string) {
+        return ipcRenderer.invoke("connect-to-wifi", SSID);
+    },
+
+    disconnectFromWifi(UUID: string) {
+        return ipcRenderer.invoke("disconnect-from-wifi", UUID);
+    },
+});
+
+contextBridge.exposeInMainWorld("brightnessAPI", {
+    changeVolume: (value: number) => {
+        console.log(value);
+        return ipcRenderer.invoke("change-volume-brn", value);
+    },
+    updateVolume: (callback: (event: any, value: any) => void) => {
+        ipcRenderer.on("onUpdateBrightness", callback);
         return () => {
             return ipcRenderer.removeListener("onUpdateBrightness", callback);
         };
     },
-    changeNightLight: (check: boolean) =>{
-        return ipcRenderer.invoke("change-nightlight",check);
-        
+    changeNightLight: (check: boolean) => {
+        return ipcRenderer.invoke("change-nightlight", check);
     },
-    updateCheckNightLight: (callback: (event: any,value:any)=> void) => {
-        ipcRenderer.on("onUpdateCheckNL",callback);
-        return () =>{
-            return ipcRenderer.removeListener("onUpdateCheckNL",callback)
-        }
+    updateCheckNightLight: (callback: (event: any, value: any) => void) => {
+        ipcRenderer.on("onUpdateCheckNL", callback);
+        return () => {
+            return ipcRenderer.removeListener("onUpdateCheckNL", callback);
+        };
     },
     changeTemperature: (value: number) => {
-        return ipcRenderer.invoke("change-temparature",value);
+        return ipcRenderer.invoke("change-temparature", value);
     },
-    updateTemperature: (callback: (event: any, value: any)=> void)=>{
-        ipcRenderer.on("onUpdateTemperature",callback);
+    updateTemperature: (callback: (event: any, value: any) => void) => {
+        ipcRenderer.on("onUpdateTemperature", callback);
         return () => {
-            return ipcRenderer.removeListener("onUpdateTemperature",callback);
-        }
+            return ipcRenderer.removeListener("onUpdateTemperature", callback);
+        };
     },
     changeSchedule: (value: boolean) => {
-        return ipcRenderer.invoke("change-schedule",value);
+        return ipcRenderer.invoke("change-schedule", value);
     },
     updateSchedule: (callback: (event: any, value: any) => void) => {
         ipcRenderer.on("onUpdateSchedule", callback);
         return () => {
-            return ipcRenderer.removeListener("onUpdateSchedule",callback);
-        }
+            return ipcRenderer.removeListener("onUpdateSchedule", callback);
+        };
     },
-    changeTimeFrom: (value : string) => {
-        return ipcRenderer.invoke("change-time-from",value);
+    changeTimeFrom: (value: string) => {
+        return ipcRenderer.invoke("change-time-from", value);
     },
-    changeTimeTo:  (value : string) => {
-        return ipcRenderer.invoke("change-time-to",value);
+    changeTimeTo: (value: string) => {
+        return ipcRenderer.invoke("change-time-to", value);
     },
     updateTime: (callback: (event: any, value: any) => void) => {
         ipcRenderer.on("onUpdateTime", callback);
         return () => {
             return ipcRenderer.removeListener("onUpdateTime", callback);
-        }
-    }
-
-})
+        };
+    },
+});

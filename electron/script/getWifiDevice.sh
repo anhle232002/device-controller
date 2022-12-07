@@ -1,5 +1,4 @@
 output="$(nmcli device wifi)"
-numberOfNetwork="$(echo "$output" | wc -l)"
 availableNetWorks=()
 function getNetworks
 {

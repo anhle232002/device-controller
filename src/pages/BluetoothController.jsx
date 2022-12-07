@@ -5,21 +5,19 @@ import { useEffect, useState } from "react";
 import { useBluetoothStore } from "../store/bluetoothStore";
 function BluetoothController() {
     const { isActive, toggle, devices } = useBluetoothStore();
-    console.log(devices);
+
     return (
         <div className="py-4 px-10 text-custom-white">
             <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold tracking-wider">
-                    Bluetooth Controller
-                </h2>
+                <h2 className="text-lg font-semibold tracking-wider">Bluetooth Controller</h2>
 
                 <ToggleButton checked={isActive} onChange={toggle} width="55px" />
             </div>
             {isActive ? (
                 <>
                     <p className="mt-6 text-sm tracking-wide">
-                        Your device is visible as "Anh-computer" and available for
-                        Bluetooth file transfer.
+                        Your device is visible as "Anh-computer" and available for Bluetooth file
+                        transfer.
                     </p>
 
                     <div className="mt-6 px-20">
@@ -37,9 +35,7 @@ function BluetoothController() {
                             alt="bluetoothIcon"
                         />
                     </div>
-                    <h4 className="mt-4 font-semibold tracking-wide">
-                        Bluetooth Turned Off
-                    </h4>
+                    <h4 className="mt-4 font-semibold tracking-wide">Bluetooth Turned Off</h4>
                 </div>
             )}
         </div>
