@@ -30,11 +30,7 @@ export function brightnessHandler(webContent: Electron.WebContents){
     // ipcMain.handle("change-")
     const brightnessWorker= new Worker('./main/threads/brightness.js');
     brightnessWorker.on("message",(data)=>{
-        webContent.send("onUpdateBrightness",data.volume);
-        webContent.send("onUpdateCheckNL",data.check);
-        webContent.send("onUpdateTemperature",data.temparature);
-        webContent.send("onUpdateSchedule",data.schedule);
-        webContent.send("onUpdateTime",data.time);
+        webContent.send("onUpdateBrightness",data);
     })
 }
 
@@ -48,7 +44,7 @@ export const getBrightnessVolume= async () => {
         value=value.replace(/\(|\)|<|>|,/g,"");
         // console.log(value);
         
-        return value;
+        return +value;
     } catch (error) {
         console.log(error);
         
@@ -59,7 +55,7 @@ export const getBrightnessVolume= async () => {
 export const getActiveNightLight= async () => {
     try {
         const {stdout} = await execAsync("gsettings get org.gnome.settings-daemon.plugins.color night-light-enabled");
-        // console.log(stdout.trim());
+        console.log(stdout.trim());
         // console.log(stdout === "true");
         
         return stdout.trim()==="true";
@@ -68,12 +64,12 @@ export const getActiveNightLight= async () => {
         
     }
 }
-export const getTemperature =async () =>{
+export const getTemperature = async () =>{
     try {
         const { stdout } = await execAsync("gsettings get org.gnome.settings-daemon.plugins.color night-light-temperature");
         console.log(stdout.substring(7).trim());
         
-        return stdout.substring(7).trim();
+        return +stdout.substring(7).trim();
     } catch (error) {
         console.log(error);
     }
@@ -91,6 +87,8 @@ export const getSchedule = async () => {
 export const getTimeFrom = async () => {
     try {
         const { stdout } = await execAsync("gsettings get org.gnome.settings-daemon.plugins.color night-light-schedule-from");
+        console.log(stdout);
+        
         return +stdout;
     } catch (error) {
         console.log(error);

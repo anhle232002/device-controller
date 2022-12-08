@@ -13,17 +13,15 @@ async function getData(){
 
         const [volume, check, temparature, schedule, timeFrom, timeTo] = 
         await Promise.all([getBrightnessVolume() , getActiveNightLight() , getTemperature() , getSchedule() , getTimeFrom(), getTimeTo() ])
-
+        console.log(temparature);
+        
         parentPort?.postMessage({
-            volume: volume,
-            check: check,
-            temparature: temparature,
-            schedule: schedule,
-            time: {
-                timeFrom,
-                timeTo
-            },
-
+                volume:volume,
+                check: check,
+                temparature: temparature,
+                schedule: schedule,
+                timeFrom: timeFrom,
+                timeTo: timeTo
         });
     } catch (error) {
         

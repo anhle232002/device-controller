@@ -74,50 +74,27 @@ contextBridge.exposeInMainWorld("brightnessAPI",{
         console.log(value);
         return ipcRenderer.invoke("change-volume-brn",value);
     },
-    updateVolume: (callback: (event: any, value: any)=> void)=>{
-        ipcRenderer.on("onUpdateBrightness",callback);
-        return () => {
-            return ipcRenderer.removeListener("onUpdateBrightness", callback);
-        };
-    },
     changeNightLight: (check: boolean) =>{
         return ipcRenderer.invoke("change-nightlight",check);
         
     },
-    updateCheckNightLight: (callback: (event: any,value:any)=> void) => {
-        ipcRenderer.on("onUpdateCheckNL",callback);
-        return () =>{
-            return ipcRenderer.removeListener("onUpdateCheckNL",callback)
-        }
-    },
     changeTemperature: (value: number) => {
         return ipcRenderer.invoke("change-temparature",value);
-    },
-    updateTemperature: (callback: (event: any, value: any)=> void)=>{
-        ipcRenderer.on("onUpdateTemperature",callback);
-        return () => {
-            return ipcRenderer.removeListener("onUpdateTemperature",callback);
-        }
     },
     changeSchedule: (value: boolean) => {
         return ipcRenderer.invoke("change-schedule",value);
     },
-    updateSchedule: (callback: (event: any, value: any) => void) => {
-        ipcRenderer.on("onUpdateSchedule", callback);
-        return () => {
-            return ipcRenderer.removeListener("onUpdateSchedule",callback);
-        }
-    },
+
     changeTimeFrom: (value : string) => {
         return ipcRenderer.invoke("change-time-from",value);
     },
     changeTimeTo:  (value : string) => {
         return ipcRenderer.invoke("change-time-to",value);
     },
-    updateTime: (callback: (event: any, value: any) => void) => {
-        ipcRenderer.on("onUpdateTime", callback);
+    updateBrightness: (callback: (event: any, value: any) => void) => {
+        ipcRenderer.on("onUpdateBrightness", callback);
         return () => {
-            return ipcRenderer.removeListener("onUpdateTime", callback);
+            return ipcRenderer.removeListener("onUpdateBrightness", callback);
         }
     }
 

@@ -18,17 +18,12 @@ function App() {
         useAudioStore();
     const {
         volume: brnVolume,
-        updateVolume: updateBrnVolume,
         check,
-        updateNightLight,
-        temperature,
-        updateTemperature,
+        temparature,
         schedule,
-        updateSchedule,
         timeFrom,
         timeTo,
-        updateTimeFrom,
-        updateTimeTo,
+        updateBrightness , from, to
     } = useBrightnessStore();
 
     useEffect(() => {
@@ -49,41 +44,16 @@ function App() {
     useListener(() => window.wifiAPI.onUpdateNetworks((_, data) => onUpdateWifi(data)), 1000, [
         networks,
     ]);
-    useListener(() => window.brightnessAPI.updateVolume((_, data) => updateBrnVolume(data)), 1000, [
+    useListener(() => window.brightnessAPI.updateBrightness((_,data) => updateBrightness(data)),1000,[
         brnVolume,
-    ]);
-    useListener(
-        () =>
-            window.brightnessAPI.updateCheckNightLight((_, data) => {
-                updateNightLight(data);
-                // console.log(data);
-            }),
-        1000,
-        [check]
-    );
-    useListener(
-        () =>
-            window.brightnessAPI.updateTemperature((_, data) => {
-                updateTemperature(data);
-            }),
-        1000,
-        [temperature]
-    );
-    useListener(
-        () => window.brightnessAPI.updateSchedule((_, data) => updateSchedule(data)),
-        1000,
-        [schedule]
-    );
-
-    useListener(
-        () =>
-            window.brightnessAPI.updateTime((_, data) => {
-                updateTimeFrom(data.timeFrom);
-                updateTimeTo(data.timeTo);
-            }),
-        1000,
-        [timeFrom, timeTo]
-    );
+        check,
+        temparature,
+        schedule,
+        timeFrom,
+        timeTo,
+        from,
+        to
+    ])
     // console.log(window.brightnessAPI);
     return (
         <div id="App" className="min-h-screen ">

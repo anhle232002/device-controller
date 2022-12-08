@@ -39,12 +39,12 @@ export const getBluetoothStatus = async () => {
 
 export const getBluetoothDevices = async () => {
     await execAsync(
-        "chmod +x /home/anh/Desktop/study/device-controller-2/electron/script/getDevices.sh"
+        "chmod +x electron/script/getDevices.sh"
     );
 
     try {
         const { stdout } = await execAsync(
-            "bash /home/anh/Desktop/study/device-controller-2/electron/script/getDevices.sh"
+            "bash electron/script/getDevices.sh"
         );
 
         const { devices } = JSON.parse(stdout);

@@ -1,10 +1,8 @@
 import { useBrightnessStore } from "../../store/brightnessStore";
 
 function Settime() {
-    const { timeFrom, timeTo, changeTimeFrom, changeTimeTo, check, schedule } =
+    const { timeFrom, timeTo, changeTimeFrom, changeTimeTo, check, schedule , from , to} =
         useBrightnessStore();
-
-    // const
 
     return (
         <div
@@ -15,9 +13,9 @@ function Settime() {
             <div className="block ">
                 <div>
                     <button
-                        className=" bg-slate-500 text-3xl"
+                        className=" bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
                         onClick={(e) => {
-                            changeTimeFrom(timeFrom + 1);
+                            changeTimeFrom(from.hour + 1 , from.min);
                         }}
                     >
                         +
@@ -25,14 +23,16 @@ function Settime() {
                     <input
                         type="text"
                         className="w-10 text-black text-center"
-                        value={Math.floor(timeFrom)}
-                        onChange={(e) => {}}
+                        value={from.hour}
+                        // onChange={(e) => {
+                        //     changeTimeFrom(+e.target.value)
+                        // }}
                         id="hourFrom"
                     />
                     <button
-                        className="text-3xl bg-slate-500"
+                        className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
                         onClick={(e) => {
-                            changeTimeFrom(timeFrom - 1);
+                            changeTimeFrom(from.hour - 1 , from.min);
                         }}
                     >
                         -
@@ -40,9 +40,9 @@ function Settime() {
                 </div>
                 <div>
                     <button
-                        className="text-3xl bg-slate-500"
+                        className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
                         onClick={(e) => {
-                            changeTimeFrom(timeFrom + 1 / 60);
+                            changeTimeFrom(from.hour , from.min + 1);
                         }}
                     >
                         +
@@ -50,12 +50,16 @@ function Settime() {
                     <input
                         type="text"
                         className="w-10 text-black text-center"
-                        value={Math.floor((timeFrom - Math.floor(timeFrom)) * 60)}
+                        value={from.min}
+                        // onChange={(e) => {
+                        //     handleChangeMinute(+e.target.value)
+                        // }
+                        // }
                     />
                     <button
-                        className="text-3xl bg-slate-500"
+                        className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
                         onClick={(e) => {
-                            changeTimeFrom(timeFrom - 1 / 60);
+                            changeTimeFrom(from.hour , from.min - 1);
                         }}
                     >
                         -
@@ -66,9 +70,9 @@ function Settime() {
             <div className="block">
                 <div>
                     <button
-                        className="text-3xl bg-slate-500"
+                        className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
                         onClick={(e) => {
-                            changeTimeTo(timeTo + 1);
+                            changeTimeTo(to.hour + 1 , to.min);
                         }}
                     >
                         +
@@ -76,12 +80,12 @@ function Settime() {
                     <input
                         type="text"
                         className="w-10 text-black text-center"
-                        value={Math.floor(timeTo)}
+                        value={to.hour}
                     />
                     <button
-                        className="text-3xl bg-slate-500"
+                        className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
                         onClick={(e) => {
-                            changeTimeTo(timeTo - 1);
+                            changeTimeTo(to.hour - 1 , to.min);
                         }}
                     >
                         -
@@ -89,9 +93,9 @@ function Settime() {
                 </div>
                 <div>
                     <button
-                        className="text-3xl bg-slate-500"
+                        className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
                         onClick={(e) => {
-                            changeTimeTo(timeTo + 1 / 60);
+                            changeTimeTo(to.hour , to.min + 1);
                         }}
                     >
                         +
@@ -99,12 +103,12 @@ function Settime() {
                     <input
                         type="text"
                         className="w-10 text-black text-center"
-                        value={Math.floor((timeTo - Math.floor(timeTo)) * 60)}
+                        value={to.min}
                     />
                     <button
-                        className="text-3xl bg-slate-500"
+                        className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
                         onClick={(e) => {
-                            changeTimeTo(timeTo - 1 / 60);
+                            changeTimeTo(to.hour,to.min -1)
                         }}
                     >
                         -
