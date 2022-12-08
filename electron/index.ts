@@ -6,9 +6,8 @@ import { BrowserWindow, app, ipcMain } from "electron";
 import isDev from "electron-is-dev";
 import { handleBluetoothAPI } from "./handlers/bluetoothHandler";
 import { handleAudioAPI } from "./handlers/audioHandler";
-
+import fs from "fs";
 import { brightnessHandler } from "./handlers/brightnessHandler";
-import { handle } from "./handlers/commonHandler";
 import { handleWifi } from "./handlers/wifiHandlers";
 
 const height = 750;
@@ -39,13 +38,19 @@ function createWindow() {
         window?.loadFile(url);
     }
 
-    handle(window.webContents);
-    handleBluetoothAPI(window.webContents);
-    handleAudioAPI(window.webContents);
+    ipcMain.handle("load-image", (event, filePath) => {
+        const base64 = fs.readFileSync(filePath).toString("base64");
 
-    brightnessHandler(window.webContents);
+        const src = `data:image/jpg;base64,${base64}`;
 
-    handleWifi(window.webContents);
+        return src;
+    });
+    handleBluetoothAPI(window.webContents, ipcMain);
+    handleAudioAPI(window.webContents, ipcMain);
+
+    brightnessHandler(window.webContents, ipcMain);
+
+    handleWifi(window.webContents, ipcMain);
 
     ipcMain.on("close", () => {
         window.close();

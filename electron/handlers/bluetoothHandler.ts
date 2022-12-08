@@ -1,11 +1,12 @@
-import { ipcMain } from "electron";
 import { exec } from "child_process";
 import { promisify } from "util";
 import { Worker } from "worker_threads";
+import { getExtraResourceFilePath, getThreadFilePath } from "../util";
+import path from "path";
 
 const execAsync = promisify(exec);
 
-export const handleBluetoothAPI = (webContent: Electron.WebContents) => {
+export const handleBluetoothAPI = (webContent: Electron.WebContents, ipcMain: any) => {
     ipcMain.handle("toggle-bluetooth", async () => {
         console.log("toggle");
 
@@ -13,13 +14,12 @@ export const handleBluetoothAPI = (webContent: Electron.WebContents) => {
 
         //turn on
         if (!isActive) {
-            await execAsync("rfkill unblock bluetooth ");
+            await execAsync("bluetoothctl power on ");
 
             //turn off
-        } else await execAsync("rfkill block bluetooth");
+        } else await execAsync("bluetoothctl power off");
     });
-
-    const bluetoothWorker = new Worker("./main/threads/bluetooth.js");
+    const bluetoothWorker = new Worker(path.join(__dirname, "..", "threads", "bluetooth.js"));
     bluetoothWorker.on("message", (data) => {
         webContent.send("on-update-bluetooth", data);
     });
@@ -38,19 +38,17 @@ export const getBluetoothStatus = async () => {
 };
 
 export const getBluetoothDevices = async () => {
-    await execAsync(
-        "chmod +x /home/anh/Desktop/study/device-controller-2/electron/script/getDevices.sh"
-    );
+    const filePath = getExtraResourceFilePath("getDevices.sh");
+
+    await execAsync("chmod +x " + filePath);
 
     try {
-        const { stdout } = await execAsync(
-            "bash /home/anh/Desktop/study/device-controller-2/electron/script/getDevices.sh"
-        );
+        const { stdout } = await execAsync("bash " + filePath);
 
         const { devices } = JSON.parse(stdout);
+
         devices.pop();
 
-        // console.log(devices);
         return devices;
     } catch (error) {
         console.log(error);

@@ -3,10 +3,12 @@ import { exec } from "child_process";
 import { promisify } from "util";
 import { Worker } from "worker_threads";
 import _ from "lodash";
+import { getExtraResourceFilePath, getThreadFilePath } from "../util";
+import path from "path";
 const execAsync = promisify(exec);
 
-export const handleWifi = (webContent: Electron.WebContents) => {
-    ipcMain.handle("toggle-wifi", async (e) => {
+export const handleWifi = (webContent: Electron.WebContents, ipcMain: any) => {
+    ipcMain.handle("toggle-wifi", async (e: any) => {
         const isEnabled = await getWifiStatus();
 
         const command = `nmcli radio wifi ${isEnabled ? "off" : "on"}`;
@@ -30,7 +32,7 @@ export const handleWifi = (webContent: Electron.WebContents) => {
 
     ipcMain.handle("get-wifi-password", getWifiPassword);
 
-    const worker = new Worker("./main/threads/wifi.js");
+    const worker = new Worker(path.join(__dirname, "..", "threads", "wifi.js"));
     worker.on("message", (value) => {
         webContent.send("on-update-networks", value);
     });
@@ -56,17 +58,20 @@ export const getCurrentConnectedWifi = () =>
     });
 
 export const getAvailableNetworks = async () => {
-    await execAsync("chmod +x electron/script/getWifiDevice.sh");
+    const filePath = getExtraResourceFilePath("getWifiDevice.sh");
+
+    await execAsync("chmod +x " + filePath);
     try {
         const isActive = await getWifiStatus();
 
         if (!isActive) return [];
 
-        const { stdout } = await execAsync("bash electron/script/getWifiDevice.sh");
+        const { stdout } = await execAsync("bash " + filePath);
 
         const { networks } = JSON.parse(stdout);
 
         networks.pop();
+
         let results = _(networks).uniqBy("name").value();
 
         return results;
@@ -76,10 +81,12 @@ export const getAvailableNetworks = async () => {
 };
 
 const getSavedConnections = async () => {
-    try {
-        await execAsync("chmod +x electron/script/getConnections.sh");
+    const filePath = getExtraResourceFilePath("getConnections.sh");
 
-        const { stdout } = await execAsync("bash electron/script/getConnections.sh");
+    try {
+        await execAsync("chmod +x " + filePath);
+
+        const { stdout } = await execAsync("bash " + filePath);
 
         const { connections } = JSON.parse(stdout) as { connections: any[] };
 
@@ -114,7 +121,6 @@ const connectToWifi = async (event: any, SSID: string) => {
 
         await execAsync(`nmcli dev wifi connect "${SSID}" `);
     } catch (error) {
-        console.error("Erorororor", error);
         throw error;
     }
 };

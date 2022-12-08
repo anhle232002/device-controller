@@ -3,24 +3,24 @@ import { useEffect } from "react";
 import { useMemo } from "react";
 import { useAudioStore } from "../../store/audioStore";
 import { RangeSlider } from "../common/RangeSlider";
-
+import { motion } from "framer-motion";
 function VolumeLevels() {
     const { sinkInputs } = useAudioStore();
 
     if (!sinkInputs || sinkInputs.length === 0) return null;
 
     return (
-        <>
+        <motion.div initial={{ opacity: 0.3 }} animate={{ opacity: 1 }}>
             <h3 className="">Volume Levels</h3>
 
-            <div className="py-6 px-3 bg-tr-gradient mt-4 rounded-md shadow-lg">
+            <div className="px-3 py-6 mt-4 rounded-md shadow-lg bg-tr-gradient">
                 <ul className="space-y-3">
                     {sinkInputs.map((input) => {
                         return <SinkInput key={input.index} {...input} />;
                     })}
                 </ul>
             </div>
-        </>
+        </motion.div>
     );
 }
 
@@ -29,9 +29,7 @@ const SinkInput = ({ icon_name, icon, applicationName, left, right, index }) => 
 
     const [image, setImage] = useState();
 
-    const volume = useMemo(() => {
-        return Math.max(left, right);
-    }, [left, right]);
+    const volume = Math.max(left, right);
 
     useEffect(() => {
         window.Main.loadImage(icon).then((src) => {
@@ -39,7 +37,7 @@ const SinkInput = ({ icon_name, icon, applicationName, left, right, index }) => 
         });
     }, [icon]);
     return (
-        <li className="grid grid-cols-12 items-center gap-4">
+        <li className="grid items-center grid-cols-12 gap-4">
             <div className={`col-span-4 flex gap-2 items-center `}>
                 <img className="w-6 h-6" src={image} alt="" />
                 <span className="text-sm">{applicationName}</span>
@@ -50,16 +48,16 @@ const SinkInput = ({ icon_name, icon, applicationName, left, right, index }) => 
                     initVal={volume}
                     min={0}
                     max={100}
-                    onChange={(val) => {
-                        changeAppVolume(val, index);
+                    onChange={async (val) => {
+                        await changeAppVolume(val, index);
                     }}
                 />
             </div>
 
-            <div className=" col-span-1 py-1 px-2">
-                {volume >= 60 && <i className="ri-volume-up-line text-xl"></i>}
-                {volume > 0 && volume < 60 && <i className="ri-volume-down-line text-xl"></i>}
-                {volume === 0 && <i className="ri-volume-mute-line text-xl"></i>}
+            <div className="col-span-1 px-2 py-1 ">
+                {volume >= 60 && <i className="text-xl ri-volume-up-line"></i>}
+                {volume > 0 && volume < 60 && <i className="text-xl ri-volume-down-line"></i>}
+                {volume === 0 && <i className="text-xl ri-volume-mute-line"></i>}
             </div>
         </li>
     );

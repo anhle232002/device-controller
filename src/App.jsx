@@ -10,6 +10,7 @@ import { useAudioStore } from "./store/audioStore";
 import { useBluetoothStore } from "./store/bluetoothStore";
 import { useBrightnessStore } from "./store/brightnessStore";
 import { useWifiStore } from "./store/wifiStore";
+import { AnimatePresence } from "framer-motion";
 
 function App() {
     const { updateData, isActive } = useBluetoothStore();
@@ -92,15 +93,15 @@ function App() {
         <div id="App" className="min-h-screen ">
             <Navbar />
 
-            <div className="">
+            <AnimatePresence className="">
                 <Routes>
-                    <Route path="/" element={<BluetoothController />}></Route>
+                    <Route index path="/" element={<BluetoothController />}></Route>
                     <Route path="/bluetooth" element={<BluetoothController />}></Route>
                     <Route path="/audio" element={<AudioController />}></Route>
                     <Route path="/wifi" element={<WifiController />}></Route>
                     <Route path="/screen" element={<BrightnessController />}></Route>
                 </Routes>
-            </div>
+            </AnimatePresence>
         </div>
     );
 }

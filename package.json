@@ -12,11 +12,11 @@
     "scripts": {
         "dev": "concurrently \"npm run dev:vite\" \" npm run dev:electron\"",
         "dev:vite": "vite",
-        "dev:electron": "npm run build:electron && electron .",
+        "dev:electron": "npm run build:electron && NODE_ENV=development electron .",
         "build": "npm run build:vite && npm run build:electron",
         "build:vite": "vite build",
         "build:electron": "tsc -p electron",
-        "dist": "npm run build && electron-builder",
+        "dist": "npm run build && electron-builder --linux snap",
         "pack": "npm run build && electron-builder --dir",
         "clean": "rimraf dist main src/out",
         "type-check": "tsc",
@@ -24,38 +24,42 @@
         "lint:fix": "eslint . --ext js,jsx,ts,tsx --fix"
     },
     "dependencies": {
-        "@vitejs/plugin-react": "^2.1.0",
-        "electron-is-dev": "^2.0.0",
-        "framer-motion": "^7.6.1",
-        "immer": "^9.0.16",
-        "lodash": "^4.17.21",
-        "process": "^0.11.10",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "react-router-dom": "^6.4.2",
-        "remixicon": "^2.5.0",
-        "vite": "^3.1.8",
-        "wavesurfer.js": "^6.4.0",
-        "zustand": "^4.1.3"
-    },
-    "devDependencies": {
         "@types/lodash": "^4.14.190",
         "@types/node": "^18.11.3",
         "@types/react": "^18.0.21",
         "@types/react-dom": "^18.0.6",
         "@typescript-eslint/eslint-plugin": "5.40.1",
         "@typescript-eslint/parser": "5.40.1",
+        "@vitejs/plugin-react": "^2.1.0",
         "autoprefixer": "^10.4.12",
         "concurrently": "^7.5.0",
-        "electron": "^21.2.0",
-        "electron-builder": "^23.6.0",
+        "electron-is-dev": "^2.0.0",
+        "fix-path": "^4.0.0",
+        "framer-motion": "^7.6.1",
+        "immer": "^9.0.16",
+        "lodash": "^4.17.21",
         "postcss": "^8.4.18",
         "prettier": "2.7.1",
+        "process": "^0.11.10",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-router-dom": "^6.4.2",
+        "remixicon": "^2.5.0",
         "tailwindcss": "^3.2.1",
-        "typescript": "^4.8.4"
+        "typescript": "^4.8.4",
+        "vite": "^3.1.8",
+        "wavesurfer.js": "^6.4.0",
+        "zustand": "^4.1.3"
+    },
+    "devDependencies": {
+        "electron": "^21.2.0",
+        "electron-builder": "^23.6.0"
     },
     "build": {
-        "asar": true,
+        "asar": false,
+        "extraResources": [
+            "./extraResources/**"
+        ],
         "files": [
             "main",
             "src/out"
