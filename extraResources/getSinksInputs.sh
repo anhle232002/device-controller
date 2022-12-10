@@ -67,5 +67,3 @@ function get_sink_inputs {
 }
 get_sink_inputs
 
-
-echo "${result[*]}"

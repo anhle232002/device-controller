@@ -3,11 +3,16 @@ import { exec, spawn } from "child_process";
 import { promisify } from "util";
 import { Worker } from "worker_threads";
 import { stdout } from "process";
+import { getExtraResourceFilePath, getThreadFilePath } from "../util";
+import path from "path";
+
 const execAsync = promisify(exec);
-export const handleAudioAPI = (webContent: Electron.WebContents) => {
+export const handleAudioAPI = (webContent: Electron.WebContents, ipcMain: any) => {
+    console.log("PATH : ", path.join(__dirname, "..", "threads", "haha"));
+
     let testingMicrophoneWorker: Worker | null = null;
 
-    ipcMain.handle("change-volume", async (e, value, sink = '"@DEFAULT_SINK@"') => {
+    ipcMain.handle("change-volume", async (e: any, value: any, sink = '"@DEFAULT_SINK@"') => {
         try {
             console.log(`SET VOLUME ${sink} : ${value}%`);
             await execAsync(`pactl set-sink-volume ${sink} ${value}%`);
@@ -16,7 +21,7 @@ export const handleAudioAPI = (webContent: Electron.WebContents) => {
         }
     });
 
-    ipcMain.handle("change-application-volume", async (e, value, index) => {
+    ipcMain.handle("change-application-volume", async (e: any, value: any, index: number) => {
         try {
             console.log(`SET VOLUME ${index} : ${value}%`);
             await execAsync(`pactl set-sink-input-volume ${index} ${value}%`);
@@ -25,7 +30,7 @@ export const handleAudioAPI = (webContent: Electron.WebContents) => {
         }
     });
 
-    ipcMain.handle("change-balance", async (e, value) => {
+    ipcMain.handle("change-balance", async (e: any, value: number) => {
         try {
             const { left, right } = await getAudioVolume();
             console.log(value, left, right);
@@ -53,7 +58,9 @@ export const handleAudioAPI = (webContent: Electron.WebContents) => {
 
     ipcMain.handle("start-testing-microphone", () => {
         console.log("start testing microphone");
-        testingMicrophoneWorker = new Worker("./main/threads/microphone.js");
+        testingMicrophoneWorker = new Worker(
+            path.join(__dirname, "..", "threads", "microphone.js")
+        );
         testingMicrophoneWorker.on("message", (data) => {
             webContent.send("on-update-microphone-volume", data);
         });
@@ -63,20 +70,22 @@ export const handleAudioAPI = (webContent: Electron.WebContents) => {
     ipcMain.handle("get-sinks", getSinks);
     ipcMain.handle("change-sink-port", changeSinkPort);
 
-    const audioWorker = new Worker("./main/threads/audio.js");
+    const audioWorker = new Worker(path.join(__dirname, "..", "threads", "audio.js"));
     audioWorker.on("message", (data) => {
         webContent.send("on-update-volume", data);
     });
     ipcMain.handle("stop-testing-microphone", () => {
         if (testingMicrophoneWorker) testingMicrophoneWorker.terminate();
     });
-
 };
 
 export const getAudioVolume = async () => {
-    await execAsync("chmod +x electron/script/getCurrentVolume.sh");
+    const filePath = getExtraResourceFilePath("getCurrentVolume.sh");
+
+    // await execAsync("chmod +x " + filePath);
+
     try {
-        const { stdout } = await execAsync("electron/script/getCurrentVolume.sh");
+        const { stdout } = await execAsync(filePath);
 
         const { volume } = JSON.parse(stdout);
         return volume;
@@ -86,15 +95,18 @@ export const getAudioVolume = async () => {
 };
 
 export const getSinks = async () => {
-    await execAsync("chmod +x electron/script/getSinks.sh");
+    const filePath = getExtraResourceFilePath("getSinks.sh");
+
+    // await execAsync("chmod +x " + filePath);
+
     try {
-        const { stdout } = await execAsync("bash electron/script/getSinks.sh");
+        const { stdout } = await execAsync("bash " + filePath);
 
         const currentSinkIndex = await getCurrentSinkIndex();
 
         const { sinks } = JSON.parse(stdout);
         sinks.pop();
-        console.log(sinks);
+        // console.log(sinks);
 
         return { sinks, currentSinkIndex };
     } catch (error) {
@@ -102,11 +114,13 @@ export const getSinks = async () => {
     }
 };
 export const getAvailablePort = async () => {
-    await execAsync("chmod +x electron/script/getPorts.sh");
+    const filePath = getExtraResourceFilePath("getPorts.sh");
+
+    // await execAsync("chmod +x " + filePath);
     try {
         console.log("get ports");
 
-        const { stdout } = await execAsync("bash electron/script/getPorts.sh");
+        const { stdout } = await execAsync("bash " + filePath);
         const { ports } = JSON.parse(stdout);
 
         <any[]>ports.pop();
@@ -138,10 +152,12 @@ export const changeSinkPort = async (event: any, index: number, portName: string
     }
 };
 export const getSinkInputs = async () => {
-    try {
-        await execAsync("chmod +x electron/script/getSinksInputs.sh");
+    const filePath = getExtraResourceFilePath("getSinksInputs.sh");
 
-        const { stdout } = await execAsync("bash electron/script/getSinksInputs.sh");
+    try {
+        // await execAsync("chmod +x " + filePath);
+
+        const { stdout } = await execAsync("bash " + filePath);
 
         if (stdout === "") return null;
 
@@ -153,9 +169,9 @@ export const getSinkInputs = async () => {
 
         sinkInputs = await Promise.all(
             sinkInputs.map(async (i: any) => {
-                const { stdout } = await execAsync(
-                    `python3 electron/script/getIcon.py ${i.icon_name}`
-                );
+                const scriptPath = getExtraResourceFilePath("getIcon.py");
+
+                const { stdout } = await execAsync(`python3 ${scriptPath} ${i.icon_name}`);
                 return { ...i, icon: stdout };
             })
         );
@@ -167,8 +183,9 @@ export const getSinkInputs = async () => {
 };
 
 export const testMicrophone = () => {
+    const filePath = getExtraResourceFilePath("microphone.sh");
     try {
-        const ls = spawn("bash", ["electron/script/test.sh"]);
+        const ls = spawn("bash", [filePath]);
 
         ls.stdout.on("data", (data) => {
             console.log(data);

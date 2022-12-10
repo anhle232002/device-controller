@@ -1,32 +1,34 @@
 import { parentPort } from "worker_threads";
-import { 
+import {
     getBrightnessVolume,
     getActiveNightLight,
     getTemperature,
     getSchedule,
     getTimeFrom,
     getTimeTo,
- } from "../handlers/brightnessHandler";
+} from "../handlers/brightnessHandler";
 
-async function getData(){
+async function getData() {
     try {
+        const [volume, check, temparature, schedule, timeFrom, timeTo] = await Promise.all([
+            getBrightnessVolume(),
+            getActiveNightLight(),
+            getTemperature(),
+            getSchedule(),
+            getTimeFrom(),
+            getTimeTo(),
+        ]);
 
-        const [volume, check, temparature, schedule, timeFrom, timeTo] = 
-        await Promise.all([getBrightnessVolume() , getActiveNightLight() , getTemperature() , getSchedule() , getTimeFrom(), getTimeTo() ])
-        console.log(temparature);
-        
         parentPort?.postMessage({
-                volume:volume,
-                check: check,
-                temparature: temparature,
-                schedule: schedule,
-                timeFrom: timeFrom,
-                timeTo: timeTo
+            volume: volume,
+            check: check,
+            temparature: temparature,
+            schedule: schedule,
+            timeFrom: timeFrom,
+            timeTo: timeTo,
         });
-    } catch (error) {
-        
-    }
+    } catch (error) {}
 }
 
 getData();
-setInterval(getData,1000);
+setInterval(getData, 1000);

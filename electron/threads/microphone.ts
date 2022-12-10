@@ -1,5 +1,6 @@
 import { spawn } from "child_process";
 import { parentPort } from "worker_threads";
+import { getExtraResourceFilePath } from "../util";
 
 const formatData = (data: string) => {
     return +data
@@ -10,7 +11,8 @@ const formatData = (data: string) => {
 };
 
 const run = () => {
-    const ls = spawn("bash", ["electron/script/microphone.sh"]);
+    const filePath = getExtraResourceFilePath("microphone.sh");
+    const ls = spawn("bash", [filePath]);
 
     ls.stdout.on("data", (data) => {
         if (data) {

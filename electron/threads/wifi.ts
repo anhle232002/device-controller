@@ -1,20 +1,20 @@
 import { parentPort } from "worker_threads";
-import { exec } from "child_process";
-import { promisify } from "util";
-import { getAvailableNetworks, getWifiStatus } from "../handlers/wifiHandlers";
+import {
+    getAvailableNetworks,
+    getCurrentConnectedWifi,
+    getWifiStatus,
+} from "../handlers/wifiHandlers";
+
 const getNetworkData = async () => {
     const networks = await getAvailableNetworks();
-
-    console.log(networks);
-
     parentPort?.postMessage({ networks });
 };
 
 const getwifiStatusData = async () => {
     const isActive = await getWifiStatus();
-    console.log(isActive);
+    const connectedWifi = await getCurrentConnectedWifi();
 
-    parentPort?.postMessage({ status: isActive });
+    parentPort?.postMessage({ status: isActive, connectedWifi });
 };
 
 setInterval(getNetworkData, 4000);
