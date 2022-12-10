@@ -60,7 +60,7 @@ export const getCurrentConnectedWifi = () =>
 export const getAvailableNetworks = async () => {
     const filePath = getExtraResourceFilePath("getWifiDevice.sh");
 
-    await execAsync("chmod +x " + filePath);
+    // await execAsync("chmod +x " + filePath);
     try {
         const isActive = await getWifiStatus();
 
@@ -84,7 +84,7 @@ const getSavedConnections = async () => {
     const filePath = getExtraResourceFilePath("getConnections.sh");
 
     try {
-        await execAsync("chmod +x " + filePath);
+        // await execAsync("chmod +x " + filePath);
 
         const { stdout } = await execAsync("bash " + filePath);
 

@@ -3,7 +3,7 @@ import path from "path";
 export const getExtraResourceFilePath = (fileName: string) => {
     return process.env.NODE_ENV === "development"
         ? path.join(__dirname, "..", "extraResources", fileName)
-        : path.join(process.resourcesPath, "extraResources", fileName);
+        : path.join(process.env.resourcesPath || process.resourcesPath, "extraResources", fileName);
 };
 
 export const getThreadFilePath = (fileName: string) => {

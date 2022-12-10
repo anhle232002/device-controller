@@ -1,17 +1,22 @@
 // Native
-import { join } from "path";
+import path, { join } from "path";
 
 // Packages
-import { BrowserWindow, app, ipcMain } from "electron";
+import { BrowserWindow, app, ipcMain, dialog } from "electron";
 import isDev from "electron-is-dev";
 import { handleBluetoothAPI } from "./handlers/bluetoothHandler";
-import { handleAudioAPI } from "./handlers/audioHandler";
 import fs from "fs";
+import fixPath from "fix-path";
+import { handleAudioAPI } from "./handlers/audioHandler";
 import { brightnessHandler } from "./handlers/brightnessHandler";
 import { handleWifi } from "./handlers/wifiHandlers";
-
+import { exec } from "child_process";
+import { Worker } from "worker_threads";
 const height = 750;
 const width = 800;
+
+fixPath();
+process.env.resourcesPath = process.resourcesPath;
 
 function createWindow() {
     // Create the browser window.
@@ -47,14 +52,22 @@ function createWindow() {
     });
     handleBluetoothAPI(window.webContents, ipcMain);
     handleAudioAPI(window.webContents, ipcMain);
-
     brightnessHandler(window.webContents, ipcMain);
-
     handleWifi(window.webContents, ipcMain);
 
-    ipcMain.on("close", () => {
-        window.close();
+    const bluetoothWorker = new Worker(path.join(__dirname, ".", "threads", "bluetooth.js"));
+    bluetoothWorker.on("message", (data) => {
+        window.webContents.send("on-update-bluetooth", data);
     });
+
+    ipcMain.on("close", async () => {
+        window.close();
+        await bluetoothWorker.terminate();
+    });
+    // dialog.showErrorBox("Error", "" + app.getAppPath());
+    // exec("bash " + getExtraResourceFilePath("getDevices.sh"), (err, stdout) => {
+    //     dialog.showErrorBox("devices", getExtraResourceFilePath("getDevices.sh"));
+    // });
 }
 
 app.whenReady().then(() => {

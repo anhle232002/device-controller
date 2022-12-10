@@ -60,26 +60,24 @@ export const useAudioStore = create((set, get) => ({
     },
 
     async updateVolume(data) {
+        console.log(data);
         if (data.volume) {
             if (
-                get().volume === Math.max(data.volume.left, data.volume.right) &&
-                get().balance === data.volume.balance
+                get().volume !== Math.max(data.volume.left, data.volume.right) ||
+                get().balance !== data.volume.balance
             )
-                return;
-
-            set(() => ({
-                volume: Math.max(data.volume.left, data.volume.right),
-                balance: data.volume.balance,
-            }));
+                set(() => ({
+                    volume: Math.max(data.volume.left, data.volume.right),
+                    balance: data.volume.balance,
+                }));
         }
 
         if (data.sinkInputs) {
-            if (_.isEqual(data.sinkInputs, get().sinkInputs)) return;
+            if (!_.isEqual(data.sinkInputs, get().sinkInputs))
+                set(() => ({
+                    sinkInputs: data.sinkInputs,
+                }));
             console.log(data.sinkInputs);
-
-            set(() => ({
-                sinkInputs: data.sinkInputs,
-            }));
         }
     },
 }));

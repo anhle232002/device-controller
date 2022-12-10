@@ -39,7 +39,6 @@ export const useWifiStore = create((set, get) => ({
     onUpdateWifi(data) {
         // only trigger set data if new data is different from old data
         // console.log(data);
-        console.log(data.connectedWifi, get().connectedWifi);
         if (data.networks) {
             if (!_.isEqual(get().networks, data.networks)) {
                 set(() => ({ networks: data.networks }));

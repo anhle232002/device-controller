@@ -23,6 +23,8 @@ const loadSinkInputs = async () => {
 const getData = async () => {
     try {
         const [volume, sinkInputs] = await Promise.all([getAudioVolume(), getSinkInputs()]);
+        console.log(sinkInputs);
+
         parentPort?.postMessage({ volume, sinkInputs });
     } catch (error) {
         console.log(error);

@@ -82,7 +82,7 @@ export const handleAudioAPI = (webContent: Electron.WebContents, ipcMain: any) =
 export const getAudioVolume = async () => {
     const filePath = getExtraResourceFilePath("getCurrentVolume.sh");
 
-    await execAsync("chmod +x " + filePath);
+    // await execAsync("chmod +x " + filePath);
 
     try {
         const { stdout } = await execAsync(filePath);
@@ -97,7 +97,7 @@ export const getAudioVolume = async () => {
 export const getSinks = async () => {
     const filePath = getExtraResourceFilePath("getSinks.sh");
 
-    await execAsync("chmod +x " + filePath);
+    // await execAsync("chmod +x " + filePath);
 
     try {
         const { stdout } = await execAsync("bash " + filePath);
@@ -116,7 +116,7 @@ export const getSinks = async () => {
 export const getAvailablePort = async () => {
     const filePath = getExtraResourceFilePath("getPorts.sh");
 
-    await execAsync("chmod +x " + filePath);
+    // await execAsync("chmod +x " + filePath);
     try {
         console.log("get ports");
 
@@ -154,7 +154,7 @@ export const changeSinkPort = async (event: any, index: number, portName: string
 export const getSinkInputs = async () => {
     const filePath = getExtraResourceFilePath("getSinksInputs.sh");
     try {
-        await execAsync("chmod +x " + filePath);
+        // await execAsync("chmod +x " + filePath);
 
         const { stdout } = await execAsync("bash " + filePath);
 
