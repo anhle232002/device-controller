@@ -11,9 +11,11 @@ import { handleAudioAPI } from "./handlers/audioHandler";
 import { brightnessHandler } from "./handlers/brightnessHandler";
 import { forgetConnection, handleWifi } from "./handlers/wifiHandlers";
 import { exec } from "child_process";
+import { promisify } from "util";
 import { Worker } from "worker_threads";
 const height = 750;
 const width = 800;
+const execAsync = promisify(exec);
 
 fixPath();
 process.env.resourcesPath = process.resourcesPath;
@@ -67,6 +69,16 @@ function createWindow() {
             return true;
         }
         return false;
+    });
+
+    ipcMain.handle("get-hostname", async (e: any) => {
+        try {
+            const { stdout } = await execAsync("hostname");
+
+            return stdout.trim();
+        } catch (error) {
+            console.log(error);
+        }
     });
 
     handleBluetoothAPI(window.webContents, ipcMain);

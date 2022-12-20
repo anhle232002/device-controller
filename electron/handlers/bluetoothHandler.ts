@@ -13,11 +13,13 @@ export const handleBluetoothAPI = (webContent: Electron.WebContents, ipcMain: an
 
             //turn on
             if (!isActive) {
-                await execAsync("bluetoothctl power on ", { env: process.env });
+                await execAsync("rfkill unblock bluetooth | bluetoothctl power on");
 
                 //turn off
-            } else await execAsync("bluetoothctl power off", { env: process.env });
+            } else await execAsync("bluetoothctl power off");
         } catch (error) {
+            console.log(error);
+
             throw error;
         }
     });

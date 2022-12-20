@@ -3,8 +3,15 @@ import ToggleButton from "../components/common/ToggleButton";
 import bluetoothIcon from "../assets/icons/bluetooth-icon.png";
 import { motion } from "framer-motion";
 import { useBluetoothStore } from "../store/bluetoothStore";
+import { useEffect } from "react";
+import { useState } from "react";
 function BluetoothController() {
     const { isActive, toggle, devices } = useBluetoothStore();
+    const [hostname, setHostname] = useState("");
+
+    useEffect(() => {
+        window.Main.getHostName().then(setHostname);
+    }, []);
 
     return (
         <motion.div
@@ -20,7 +27,7 @@ function BluetoothController() {
             {isActive ? (
                 <>
                     <p className="mt-6 text-sm tracking-wide">
-                        Your device is visible as "Anh-computer" and available for Bluetooth file
+                        Your device is visible as {hostname} and available for Bluetooth file
                         transfer.
                     </p>
 

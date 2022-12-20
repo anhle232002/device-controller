@@ -4,6 +4,10 @@ const api = {
     loadImage(filePath: string) {
         return ipcRenderer.invoke("load-image", filePath);
     },
+
+    getHostName() {
+        return ipcRenderer.invoke("get-hostname");
+    },
 };
 contextBridge.exposeInMainWorld("Main", api);
 
