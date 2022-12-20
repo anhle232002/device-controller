@@ -5,7 +5,6 @@ export const useWifiStore = create((set, get) => ({
     isActive: false,
     connectedWifi: null,
     connections: [],
-    shouldShowEnteringPasswordModal: false,
     connectingNetworkName: null,
 
     toggle() {
@@ -17,6 +16,14 @@ export const useWifiStore = create((set, get) => ({
     async getConnections() {
         const connections = await window.wifiAPI.getConnections();
         set(() => ({ connections }));
+    },
+
+    async forgetConnection(UUID) {
+        const isSuccessful = await window.wifiAPI.forgetConnection(UUID);
+
+        if (isSuccessful) {
+            set((state) => ({ connections: state.connections.filter((c) => c.UUID !== UUID) }));
+        }
     },
 
     async turnOnConnection(UUID) {
@@ -34,6 +41,11 @@ export const useWifiStore = create((set, get) => ({
     async disconnectFromWifi(UUID) {
         await window.wifiAPI.disconnectFromWifi(UUID);
         await get().getConnections();
+    },
+
+    async getPassword(name) {
+        const password = await window.wifiAPI.getWifiPassword(name);
+        return password;
     },
 
     onUpdateWifi(data) {
@@ -56,19 +68,5 @@ export const useWifiStore = create((set, get) => ({
                 set(() => ({ connectedWifi: data.connectedWifi }));
             }
         }
-    },
-
-    openEnteringPasswordModal(networkName) {
-        set(() => ({
-            shouldShowEnteringPasswordModal: true,
-            connectingNetworkName: networkName,
-        }));
-    },
-
-    closeEnteringPasswordModal() {
-        set(() => ({
-            shouldShowEnteringPasswordModal: false,
-            connectingNetworkName: null,
-        }));
     },
 }));

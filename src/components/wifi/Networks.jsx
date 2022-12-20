@@ -81,14 +81,14 @@ const WifiNetwork = ({ signal, name }) => {
                             Disconnect
                         </span>
                         <span>
-                            <i className="ri-links-line text-xl"></i>
+                            <i className="text-xl ri-links-line"></i>
                         </span>
                         <span
                             onClick={handleClickSetting}
                             role="button"
-                            className="hover:bg-custom-white text-white hover:text-custom-gray p-1 w-8 h-8 center duration-200 rounded-lg"
+                            className="w-8 h-8 p-1 text-white duration-200 rounded-lg hover:bg-custom-white hover:text-custom-gray center"
                         >
-                            <i class="ri-settings-3-fill  text-xl"></i>
+                            <i className="text-xl ri-settings-3-fill"></i>
                         </span>
                     </div>
                 )}

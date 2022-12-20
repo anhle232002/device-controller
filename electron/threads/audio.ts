@@ -1,30 +1,28 @@
 import { parentPort } from "worker_threads";
-import { getAudioVolume, getSinkInputs } from "../handlers/audioHandler";
-
-export const getVolume = async () => {
-    try {
-        const volume = await getAudioVolume();
-
-        parentPort?.postMessage({ volume });
-    } catch (error) {
-        console.log(error);
-    }
-};
-const loadSinkInputs = async () => {
-    try {
-        const sinkInputs = await getSinkInputs();
-
-        parentPort?.postMessage({ sinkInputs });
-    } catch (error) {
-        console.log(error);
-    }
-};
+import {
+    getAudioVolume,
+    getInputSource,
+    getInputVolume,
+    getSinkInputs,
+} from "../handlers/audioHandler";
 
 const getData = async () => {
     try {
-        const [volume, sinkInputs] = await Promise.all([getAudioVolume(), getSinkInputs()]);
+        const [volume, sinkInputs, inputVolume] = await Promise.all([
+            getAudioVolume(),
+            getSinkInputs(),
+            getInputVolume(),
+        ]);
+        parentPort?.postMessage({ volume, sinkInputs, inputVolume });
+    } catch (error) {
+        console.log(error);
+    }
+};
+const getInputSourceData = async () => {
+    try {
+        const inputSource = await getInputSource();
 
-        parentPort?.postMessage({ volume, sinkInputs });
+        parentPort?.postMessage({ inputSource });
     } catch (error) {
         console.log(error);
     }
@@ -32,4 +30,6 @@ const getData = async () => {
 getData();
 
 setInterval(getData, 1000);
+setInterval(getInputSourceData, 5000);
+
 // setInterval(loadSinkInputs, 3000);

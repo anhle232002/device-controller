@@ -8,6 +8,8 @@ export const useAudioStore = create((set, get) => ({
     sinks: [],
     sinkInputs: [],
     currentSinkIndex: -1,
+    inputSource: null,
+    inputVolume: 0,
 
     changeVolume(value) {
         if (+value === get().volume) return;
@@ -35,8 +37,15 @@ export const useAudioStore = create((set, get) => ({
         window.audioAPI.changeBalance(value);
     },
 
+    async changeInputVolume(volume) {
+        window.audioAPI.changeInputVolume(get().inputSource.index, volume);
+
+        set(() => ({ inputVolume: volume }));
+    },
+
     async getSinks() {
         const { sinks, currentSinkIndex } = await window.audioAPI.getSinks();
+
         set(() => ({ sinks, currentSinkIndex }));
     },
 
@@ -60,7 +69,6 @@ export const useAudioStore = create((set, get) => ({
     },
 
     async updateVolume(data) {
-        console.log(data);
         if (data.volume) {
             if (
                 get().volume !== Math.max(data.volume.left, data.volume.right) ||
@@ -77,7 +85,20 @@ export const useAudioStore = create((set, get) => ({
                 set(() => ({
                     sinkInputs: data.sinkInputs,
                 }));
-            console.log(data.sinkInputs);
+        }
+
+        if (data.inputSource) {
+            if (!_.isEqual(data.inputSource, get().inputSource))
+                set(() => ({
+                    inputSource: data.inputSource,
+                }));
+        }
+
+        if (data.inputVolume) {
+            if (!_.isEqual(data.inputVolume, get().inputVolume))
+                set(() => ({
+                    inputVolume: data.inputVolume,
+                }));
         }
     },
 }));

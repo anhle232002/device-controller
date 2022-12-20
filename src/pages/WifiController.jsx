@@ -3,17 +3,10 @@ import ToggleButton from "../components/common/ToggleButton";
 import Networks from "../components/wifi/Networks";
 import { useWifiStore } from "../store/wifiStore";
 import { motion } from "framer-motion";
+import Connections from "../components/wifi/Connections";
 
 function WifiController() {
-    const {
-        isActive,
-        toggle,
-        getConnections,
-        connections,
-        connectedWifi,
-        shouldShowEnteringPasswordModal,
-        closeEnteringPasswordModal,
-    } = useWifiStore();
+    const { isActive, toggle, getConnections, connections, connectedWifi } = useWifiStore();
 
     useEffect(() => {
         getConnections();
@@ -24,7 +17,7 @@ function WifiController() {
             <motion.div
                 initial={{ opacity: 0.5 }}
                 animate={{ opacity: 1 }}
-                className="px-10 py-4 text-custom-white"
+                className="px-10 pt-4 pb-20 text-custom-white"
             >
                 <div className="flex items-center justify-between">
                     <h2 className="text-lg font-semibold tracking-wider">Wifi Controller</h2>
@@ -39,11 +32,17 @@ function WifiController() {
                         <Networks />
                     </div>
                 </div>
-            </motion.div>
 
-            {shouldShowEnteringPasswordModal && (
-                <EnteringPasswordModal onClose={closeEnteringPasswordModal} />
-            )}
+                <div className="mt-10 ">
+                    <h3>
+                        <span>Connections : </span>
+                        <span></span>
+                    </h3>
+                    <div className="overflow-y-scroll max-h-48">
+                        <Connections />
+                    </div>
+                </div>
+            </motion.div>
         </>
     );
 }

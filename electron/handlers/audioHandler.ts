@@ -56,6 +56,10 @@ export const handleAudioAPI = (webContent: Electron.WebContents, ipcMain: any) =
         }
     });
 
+    ipcMain.handle("change-input-volume", setInputVolume);
+
+    ipcMain.handle("get-input-source", getInputSource);
+
     ipcMain.handle("start-testing-microphone", () => {
         console.log("start testing microphone");
         testingMicrophoneWorker = new Worker(
@@ -68,6 +72,7 @@ export const handleAudioAPI = (webContent: Electron.WebContents, ipcMain: any) =
 
     ipcMain.handle("get-available-port", getAvailablePort);
     ipcMain.handle("get-sinks", getSinks);
+    // ipcMain.handle("get-input-volume", getInputVolume);
     ipcMain.handle("change-sink-port", changeSinkPort);
 
     const audioWorker = new Worker(path.join(__dirname, "..", "threads", "audio.js"));
@@ -105,6 +110,7 @@ export const getSinks = async () => {
         const currentSinkIndex = await getCurrentSinkIndex();
 
         const { sinks } = JSON.parse(stdout);
+
         sinks.pop();
         // console.log(sinks);
 
@@ -151,6 +157,40 @@ export const changeSinkPort = async (event: any, index: number, portName: string
         console.log(error);
     }
 };
+
+export const getInputSource = async () => {
+    try {
+        const filePath = getExtraResourceFilePath("getCurrentInputSource.sh");
+
+        const { stdout } = await execAsync("bash " + filePath);
+
+        const data = JSON.parse(stdout);
+
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const getInputVolume = async () => {
+    try {
+        const { stdout } = await execAsync(
+            `pacmd list-sources|grep -A 80 '* index'| grep 'volume: front-left' | cut -d "/" -f 2 | sed 's/[%]//g'  `
+        );
+        return stdout;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const setInputVolume = async (e: any, index: number, volume: number) => {
+    try {
+        await execAsync(`pactl set-source-volume ${index} ${volume}%`);
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const getSinkInputs = async () => {
     const filePath = getExtraResourceFilePath("getSinksInputs.sh");
 

@@ -9,7 +9,7 @@ import fs from "fs";
 import fixPath from "fix-path";
 import { handleAudioAPI } from "./handlers/audioHandler";
 import { brightnessHandler } from "./handlers/brightnessHandler";
-import { handleWifi } from "./handlers/wifiHandlers";
+import { forgetConnection, handleWifi } from "./handlers/wifiHandlers";
 import { exec } from "child_process";
 import { Worker } from "worker_threads";
 const height = 750;
@@ -50,6 +50,25 @@ function createWindow() {
 
         return src;
     });
+
+    ipcMain.handle("forget-connection", async (e: any, UUID) => {
+        const answer = await dialog.showMessageBox(window, {
+            type: "question",
+            buttons: ["No", "Yes , forget it"],
+            message: "Forget this connection ?",
+            title: "Confirmation",
+        });
+
+        if (answer.response === 1) {
+            console.log("forget", UUID);
+
+            await forgetConnection(UUID);
+
+            return true;
+        }
+        return false;
+    });
+
     handleBluetoothAPI(window.webContents, ipcMain);
     handleAudioAPI(window.webContents, ipcMain);
     brightnessHandler(window.webContents, ipcMain);

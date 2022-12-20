@@ -36,7 +36,13 @@ contextBridge.exposeInMainWorld("audioAPI", {
     changeSinkPort: (index: number, portName: string) =>
         ipcRenderer.invoke("change-sink-port", index, portName),
 
+    changeInputVolume: (index: number, volume: number) =>
+        ipcRenderer.invoke("change-input-volume", index, volume),
+    // getInputVolume: () => ipcRenderer.invoke("get-input-volume"),
+
     getAvailablePorts: () => ipcRenderer.invoke("get-available-port"),
+
+    getInputSource: () => ipcRenderer.invoke("get-input-source"),
 
     getSinks: () => ipcRenderer.invoke("get-sinks"),
 
@@ -92,6 +98,9 @@ contextBridge.exposeInMainWorld("wifiAPI", {
 
     disconnectFromWifi(UUID: string) {
         return ipcRenderer.invoke("disconnect-from-wifi", UUID);
+    },
+    forgetConnection(UUID: string) {
+        return ipcRenderer.invoke("forget-connection", UUID);
     },
 });
 

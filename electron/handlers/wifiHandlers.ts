@@ -1,4 +1,3 @@
-import { ipcMain } from "electron";
 import { exec } from "child_process";
 import { promisify } from "util";
 import { Worker } from "worker_threads";
@@ -134,7 +133,7 @@ const disconnectFromWifi = async (event: any, UUID: string) => {
     }
 };
 
-const forgetConnection = async (UUID: string) => {
+export const forgetConnection = async (UUID: string) => {
     await execAsync(`nmcli c delete ${UUID}`);
 };
 
@@ -150,6 +149,7 @@ const getWifiPassword = async (event: any, name: string) => {
         throw error;
     }
 };
+
 // nm-connection-editor --edit=2a6484da-08d2-49c1-b3ca-92fe258bce01
 const displayConnectionSettings = async (e: any, uuid: string) => {
     await execAsync(`nm-connection-editor --edit=${uuid}`);

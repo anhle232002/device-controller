@@ -15,7 +15,7 @@ import { AnimatePresence } from "framer-motion";
 function App() {
     const { updateData, isActive } = useBluetoothStore();
     const { onUpdateWifi, networks, isActive: wifiStatus, connectedWifi } = useWifiStore();
-    const { volume, updateVolume, balance, getAvailablePorts, getSinks, sinkInputs } =
+    const { volume, updateVolume, balance, getAvailablePorts, getSinks, sinkInputs, inputVolume } =
         useAudioStore();
     const {
         volume: brnVolume,
@@ -24,7 +24,9 @@ function App() {
         schedule,
         timeFrom,
         timeTo,
-        updateBrightness , from, to
+        updateBrightness,
+        from,
+        to,
     } = useBrightnessStore();
 
     useEffect(() => {
@@ -36,10 +38,11 @@ function App() {
         isActive,
     ]);
 
-    useListener(() => window.audioAPI.onUpdate((_, data) => updateVolume(data)), 1000, [
+    useListener(() => window.audioAPI.onUpdate((_, data) => updateVolume(data)), 500, [
         volume,
         balance,
         sinkInputs,
+        inputVolume,
     ]);
 
     useListener(() => window.wifiAPI.onUpdateNetworks((_, data) => onUpdateWifi(data)), 1000, [
@@ -47,16 +50,11 @@ function App() {
         wifiStatus,
         connectedWifi,
     ]);
-    useListener(() => window.brightnessAPI.updateBrightness((_,data) => updateBrightness(data)),1000,[
-        brnVolume,
-        check,
-        temparature,
-        schedule,
-        timeFrom,
-        timeTo,
-        from,
-        to
-    ])
+    useListener(
+        () => window.brightnessAPI.updateBrightness((_, data) => updateBrightness(data)),
+        1000,
+        [brnVolume, check, temparature, schedule, timeFrom, timeTo, from, to]
+    );
     // console.log(window.brightnessAPI);
 
     return (
