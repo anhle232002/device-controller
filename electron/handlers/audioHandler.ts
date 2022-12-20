@@ -109,10 +109,14 @@ export const getSinks = async () => {
 
         const currentSinkIndex = await getCurrentSinkIndex();
 
+        console.log(stdout);
+        
+
         const { sinks } = JSON.parse(stdout);
 
         sinks.pop();
-        // console.log(sinks);
+
+        console.log(sinks);
 
         return { sinks, currentSinkIndex };
     } catch (error) {

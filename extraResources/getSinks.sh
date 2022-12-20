@@ -46,7 +46,7 @@ function read_volume_balance {
     volume_balance="$(echo "$sinks"| grep "balance")"
     while read line
     do
-        sink_arr[$counter]+='"balance"':$(echo $line | cut -d ' ' -f 2 ),
+        sink_arr[$counter]+='"balance"':\"$(echo $line | cut -d ' ' -f 2 )\",
         let "counter+=1"
         if [ $counter -gt $number_of_sink ]; then
             break
