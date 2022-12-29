@@ -1,10 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 const links = [
-    { path: "/bluetooth", title: "Bluetooth", icon: <i class="ri-bluetooth-fill"></i> },
-    { path: "/wifi", title: "Wifi", icon: <i class="ri-wifi-fill"></i> },
-    { path: "/audio", title: "Audio", icon: <i class="ri-sound-module-fill"></i> },
-    { path: "/screen", title: "Screen", icon: <i class="ri-bluetooth-fill"></i> },
+    { path: "/bluetooth", title: "Bluetooth", icon: <i className="ri-bluetooth-fill"></i> },
+    { path: "/wifi", title: "Wifi", icon: <i className="ri-wifi-fill"></i> },
+    { path: "/audio", title: "Audio", icon: <i className="ri-sound-module-fill"></i> },
+    { path: "/screen", title: "Screen", icon: <i className="ri-sun-line"></i> },
 ];
 
 function Navbar() {
@@ -12,7 +12,7 @@ function Navbar() {
     const isCurrentPage = (path) => location.pathname === path;
 
     return (
-        <div className="top-0 right-0 z-50 w-full py-3  center text-custom-white">
+        <div className="top-0 right-0 z-50 w-full py-3 center text-custom-white">
             <motion.ul className="grid items-center w-[65%] grid-cols-4 overflow-hidden text-center rounded-full shadow-lg">
                 {links.map((link) => {
                     return (

@@ -1,17 +1,11 @@
-import { ipcMain } from "electron";
 import { exec, spawn } from "child_process";
 import { promisify } from "util";
 import { Worker } from "worker_threads";
-import { stdout } from "process";
 import { getExtraResourceFilePath, getThreadFilePath } from "../util";
 import path from "path";
 
 const execAsync = promisify(exec);
 export const handleAudioAPI = (webContent: Electron.WebContents, ipcMain: any) => {
-    console.log("PATH : ", path.join(__dirname, "..", "threads", "haha"));
-
-    let testingMicrophoneWorker: Worker | null = null;
-
     ipcMain.handle("change-volume", async (e: any, value: any, sink = '"@DEFAULT_SINK@"') => {
         try {
             console.log(`SET VOLUME ${sink} : ${value}%`);
@@ -20,7 +14,6 @@ export const handleAudioAPI = (webContent: Electron.WebContents, ipcMain: any) =
             console.log(error);
         }
     });
-
     ipcMain.handle("change-application-volume", async (e: any, value: any, index: number) => {
         try {
             console.log(`SET VOLUME ${index} : ${value}%`);
@@ -29,7 +22,6 @@ export const handleAudioAPI = (webContent: Electron.WebContents, ipcMain: any) =
             console.log(error);
         }
     });
-
     ipcMain.handle("change-balance", async (e: any, value: number) => {
         try {
             const { left, right } = await getAudioVolume();
@@ -56,9 +48,17 @@ export const handleAudioAPI = (webContent: Electron.WebContents, ipcMain: any) =
         }
     });
 
-    ipcMain.handle("change-input-volume", setInputVolume);
-
     ipcMain.handle("get-input-source", getInputSource);
+    ipcMain.handle("change-input-volume", setInputVolume);
+    ipcMain.handle("get-available-port", getAvailablePort);
+    ipcMain.handle("get-sinks", getSinks);
+    ipcMain.handle("change-sink-port", changeSinkPort);
+
+    // Create a thread to update audio data periodically
+    const audioWorker = new Worker(path.join(__dirname, "..", "threads", "audio.js"));
+    audioWorker.on("message", (data) => {
+        webContent.send("on-update-volume", data);
+    });
 
     ipcMain.handle("start-testing-microphone", () => {
         console.log("start testing microphone");
@@ -69,19 +69,11 @@ export const handleAudioAPI = (webContent: Electron.WebContents, ipcMain: any) =
             webContent.send("on-update-microphone-volume", data);
         });
     });
-
-    ipcMain.handle("get-available-port", getAvailablePort);
-    ipcMain.handle("get-sinks", getSinks);
-    // ipcMain.handle("get-input-volume", getInputVolume);
-    ipcMain.handle("change-sink-port", changeSinkPort);
-
-    const audioWorker = new Worker(path.join(__dirname, "..", "threads", "audio.js"));
-    audioWorker.on("message", (data) => {
-        webContent.send("on-update-volume", data);
-    });
+    let testingMicrophoneWorker: Worker | null = null;
     ipcMain.handle("stop-testing-microphone", () => {
         if (testingMicrophoneWorker) testingMicrophoneWorker.terminate();
     });
+    // ipcMain.handle("get-input-volume", getInputVolume);
 };
 
 export const getAudioVolume = async () => {
@@ -110,7 +102,6 @@ export const getSinks = async () => {
         const currentSinkIndex = await getCurrentSinkIndex();
 
         console.log(stdout);
-        
 
         const { sinks } = JSON.parse(stdout);
 

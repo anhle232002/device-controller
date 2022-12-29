@@ -19,3 +19,5 @@ export const useBluetoothStore = create((set, get) => ({
         }));
     },
 }));
+window.bluetoothAPI.onUpdate((_, data) => updateData(data));
+window.bluetoothAPI.toggle();

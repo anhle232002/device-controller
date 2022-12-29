@@ -28,8 +28,6 @@ export const useAudioStore = create((set, get) => ({
             return input;
         });
 
-        console.log(updatedSinkInputs);
-
         set(() => ({ sinkInputs: updatedSinkInputs }));
     },
 
@@ -45,7 +43,7 @@ export const useAudioStore = create((set, get) => ({
 
     async getSinks() {
         const { sinks, currentSinkIndex } = await window.audioAPI.getSinks();
-
+        console.log(sinks, currentSinkIndex);
         set(() => ({ sinks, currentSinkIndex }));
     },
 

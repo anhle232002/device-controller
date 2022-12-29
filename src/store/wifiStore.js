@@ -52,6 +52,7 @@ export const useWifiStore = create((set, get) => ({
         // only trigger set data if new data is different from old data
         // console.log(data);
         if (data.networks) {
+            console.log(data.networks);
             if (!_.isEqual(get().networks, data.networks)) {
                 set(() => ({ networks: data.networks }));
             }
@@ -70,3 +71,23 @@ export const useWifiStore = create((set, get) => ({
         }
     },
 }));
+[
+    {
+        BSSID: "C4:E9:84:F1:F3:66",
+        name: "Thanh Van",
+        rate: "65",
+        signal: "75",
+    },
+    {
+        BSSID: "E4:47:B3:B2:2B:0C",
+        name: "Min min",
+        rate: "130",
+        signal: "42",
+    },
+    {
+        BSSID: "CC:71:90:60:59:20",
+        name: "PHUONG NGUYEN",
+        rate: "130",
+        signal: "39",
+    },
+];

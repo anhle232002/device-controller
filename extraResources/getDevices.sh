@@ -1,9 +1,6 @@
 devices_output="$(bluetoothctl devices | sed '/CHG/d' )"
-# echo "$devices_output"
-
 #sed '/CHG/d' remove line with pattern
 devices=()
-
 while read line
 do 
     data="{"
@@ -23,12 +20,8 @@ do
         data+='"blocked"':'"'$(echo $blocked | cut -d ':' -f 2 | xargs)'"',
         connected="$(echo "$information" | grep "Connected")"
         data+='"connected"':'"'$(echo $connected | cut -d ':' -f 2 | xargs)'"''}',
-
         devices+=$data
     fi
-
-    # echo "$information"
-# bluetoothctl info $address
 done <<< "$devices_output"
 echo {'"devices"':[
 for value in "${devices[@]}"

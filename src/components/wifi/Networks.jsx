@@ -4,7 +4,9 @@ import WifiIcon from "../common/WifiIcon";
 import NetworkDetailModal from "./NetworkDetailModal";
 
 function Networks() {
-    const { networks, connections } = useWifiStore();
+    const { networks, connections, isActive } = useWifiStore();
+
+    if (!isActive) return <div>Wifi is currently turn off</div>;
 
     if (networks.length === 0) return <div>Loading...</div>;
 
