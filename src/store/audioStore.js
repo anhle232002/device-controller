@@ -98,5 +98,11 @@ export const useAudioStore = create((set, get) => ({
                     inputVolume: data.inputVolume,
                 }));
         }
+        if (data.availablePorts) {
+            if (!_.isEqual(data.availablePorts, get().availablePorts))
+                set(() => ({
+                    availablePorts: data.availablePorts,
+                }));
+        }
     },
 }));

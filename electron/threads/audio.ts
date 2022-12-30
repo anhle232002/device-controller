@@ -1,6 +1,7 @@
 import { parentPort } from "worker_threads";
 import {
     getAudioVolume,
+    getAvailablePort,
     getInputSource,
     getInputVolume,
     getSinkInputs,
@@ -8,12 +9,13 @@ import {
 
 const getData = async () => {
     try {
-        const [volume, sinkInputs, inputVolume] = await Promise.all([
+        const [volume, sinkInputs, inputVolume, availablePorts] = await Promise.all([
             getAudioVolume(),
             getSinkInputs(),
             getInputVolume(),
+            getAvailablePort(),
         ]);
-        parentPort?.postMessage({ volume, sinkInputs, inputVolume });
+        parentPort?.postMessage({ volume, sinkInputs, inputVolume, availablePorts });
     } catch (error) {
         console.log(error);
     }
